@@ -168,7 +168,7 @@ export class HistoryService {
       translation: string;
       failCount: number;
       lastFailed: string;
-      examples?: string[];
+      examples?: Array<{ sentence: string; translation?: string }>;
       example?: string;
       type?: string;
     }>
@@ -232,7 +232,7 @@ export class HistoryService {
         const word = wordsMap.get(wordId);
 
         // Get examples from subcollection
-        let examples: string[] = [];
+        let examples: Array<{ sentence: string; translation?: string }> = [];
         try {
           const examplesRef = collection(
             db,
@@ -247,7 +247,10 @@ export class HistoryService {
             orderBy("createdAt", "desc")
           );
           const examplesSnapshot = await getDocs(examplesQuery);
-          examples = examplesSnapshot.docs.map((doc) => doc.data().sentence);
+          examples = examplesSnapshot.docs.map((doc) => ({
+            sentence: doc.data().sentence,
+            translation: doc.data().translation,
+          }));
         } catch (error) {
           console.error(`Error loading examples for word ${wordId}:`, error);
         }

@@ -14,6 +14,7 @@ import {
   Play,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
 } from "lucide-react";
 
 export function History() {
@@ -27,7 +28,7 @@ export function History() {
       translation: string;
       failCount: number;
       lastFailed: string;
-      examples?: string[];
+      examples?: Array<{ sentence: string; translation?: string }>;
       example?: string;
       type?: string;
     }>
@@ -343,15 +344,11 @@ export function History() {
                 return (
                   <div
                     key={item.wordId}
-                    className={`${getCardBackgroundColor(
-                      index
-                    )} rounded-2xl shadow-lg border-2 p-6 transition-all duration-200 ${getRankingBorderColor(
-                      index
-                    )}`}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-6"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-4 mb-2">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-4 mb-3">
                           <span
                             className={`text-2xl font-bold px-3 py-1 rounded-full ${getRankingColor(
                               index
@@ -360,88 +357,103 @@ export function History() {
                             #{index + 1}
                           </span>
                           <div className="flex-1">
-                            <div className="flex items-center space-x-2">
-                              <h3 className="text-xl font-bold text-gray-900">
-                                {item.word}
-                              </h3>
-                              {item.type && (
-                                <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                                  {item.type}
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-gray-600">{item.translation}</p>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                              {item.word}
+                            </h3>
+                            <p className="text-lg text-gray-600 mb-2">
+                              {item.translation}
+                            </p>
+                            {item.type && (
+                              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
+                                {item.type}
+                              </span>
+                            )}
                           </div>
                         </div>
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
-                          <span>Failed {item.failCount} times</span>
-                          <span>Last failed: {item.lastFailed}</span>
-                          {hasExamples && (
-                            <button
-                              onClick={() => toggleExpanded(item.wordId)}
-                              className="flex items-center space-x-1 px-2 py-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-all duration-200"
-                            >
-                              <span className="text-sm font-medium">
-                                Examples
-                              </span>
-                              {isExpanded ? (
-                                <ChevronUp className="h-4 w-4" />
+
+                        <div className="flex flex-wrap items-center gap-4 text-sm mb-4">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-500">Failed:</span>
+                            <span className="font-semibold text-red-700">
+                              {item.failCount} times
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-gray-500">Last failed:</span>
+                            <span className="font-semibold text-gray-900">
+                              {item.lastFailed}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Example Sentences Section */}
+                        <div className="border-t border-gray-200 pt-4">
+                          <button
+                            onClick={() => toggleExpanded(item.wordId)}
+                            className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-3"
+                          >
+                            {isExpanded ? (
+                              <ChevronDown className="w-4 h-4" />
+                            ) : (
+                              <ChevronRight className="w-4 h-4" />
+                            )}
+                            <span>Example Sentences</span>
+                          </button>
+
+                          {isExpanded && (
+                            <div className="animate-in slide-in-from-top-2 duration-200">
+                              {hasExamples ? (
+                                <>
+                                  <div className="flex items-center space-x-2 mb-3">
+                                    <BookOpen className="h-4 w-4 text-blue-600" />
+                                    <h4 className="text-sm font-semibold text-gray-700">
+                                      Example Sentences (
+                                      {item.examples ? item.examples.length : 1}
+                                      )
+                                    </h4>
+                                  </div>
+                                  <div className="space-y-3">
+                                    {(
+                                      item.examples || [
+                                        { sentence: item.example! },
+                                      ]
+                                    ).map((example, exampleIndex) => (
+                                      <div
+                                        key={exampleIndex}
+                                        className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100"
+                                      >
+                                        <div className="flex items-start space-x-2">
+                                          <span className="text-xs font-bold text-blue-600 bg-blue-200 px-2 py-1 rounded-full">
+                                            {exampleIndex + 1}
+                                          </span>
+                                          <div className="flex-1">
+                                            <p className="text-sm text-gray-800 italic leading-relaxed mb-2">
+                                              "{example.sentence}"
+                                            </p>
+                                            {example.translation && (
+                                              <p className="text-sm text-gray-600 leading-relaxed">
+                                                "{example.translation}"
+                                              </p>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
                               ) : (
-                                <ChevronDown className="h-4 w-4" />
+                                <div className="text-center py-4">
+                                  <p className="text-gray-500 text-sm">
+                                    No example sentences available for this
+                                    word.
+                                  </p>
+                                </div>
                               )}
-                            </button>
+                            </div>
                           )}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-2xl font-bold text-red-600">
-                          {item.failCount}
-                        </div>
-                        <div className="text-sm text-gray-500">failures</div>
-                      </div>
                     </div>
-
-                    {/* Expanded Examples Section */}
-                    {isExpanded && (
-                      <div className="mt-4 pt-4 border-t border-gray-200 animate-in slide-in-from-top-2 duration-200">
-                        {hasExamples ? (
-                          <>
-                            <div className="flex items-center space-x-2 mb-3">
-                              <BookOpen className="h-4 w-4 text-blue-600" />
-                              <h4 className="text-sm font-semibold text-gray-700">
-                                Example Sentences (
-                                {item.examples ? item.examples.length : 1})
-                              </h4>
-                            </div>
-                            <div className="space-y-3">
-                              {(item.examples || [item.example!]).map(
-                                (example, exampleIndex) => (
-                                  <div
-                                    key={exampleIndex}
-                                    className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100"
-                                  >
-                                    <div className="flex items-start space-x-2">
-                                      <span className="text-xs font-bold text-blue-600 bg-blue-200 px-2 py-1 rounded-full">
-                                        {exampleIndex + 1}
-                                      </span>
-                                      <p className="text-sm text-gray-800 italic leading-relaxed">
-                                        "{example}"
-                                      </p>
-                                    </div>
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          </>
-                        ) : (
-                          <div className="text-center py-4">
-                            <p className="text-gray-500 text-sm">
-                              No example sentences available for this word.
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    )}
                   </div>
                 );
               })}

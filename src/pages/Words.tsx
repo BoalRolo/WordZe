@@ -166,10 +166,18 @@ export function Words() {
     <div className="space-y-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            Words
-          </h1>
-          <p className="text-gray-600 mt-2">
+          <div className="flex items-center gap-4 mb-2">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Words
+            </h1>
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg">
+              <span className="text-lg font-bold">{words.length}</span>
+              <span className="text-sm ml-1 opacity-90">
+                {words.length === 1 ? 'word' : 'words'}
+              </span>
+            </div>
+          </div>
+          <p className="text-gray-600">
             Manage your vocabulary collection
           </p>
         </div>
@@ -204,9 +212,13 @@ export function Words() {
             </button>
           )}
         </div>
-        {searchQuery && (
+        {(searchQuery || difficultyFilter !== "all" || showFailedOnly || typeFilter !== "all" || hasExamplesFilter !== null) && (
           <div className="mt-3 text-sm text-blue-600 font-medium">
-            Found {filteredWords.length} word{filteredWords.length !== 1 ? 's' : ''} matching "{searchQuery}"
+            {searchQuery ? (
+              <>Found {filteredWords.length} word{filteredWords.length !== 1 ? 's' : ''} matching "{searchQuery}"</>
+            ) : (
+              <>Showing {filteredWords.length} of {words.length} word{words.length !== 1 ? 's' : ''}</>
+            )}
           </div>
         )}
       </div>
