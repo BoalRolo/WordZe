@@ -173,7 +173,9 @@ export function Flashcards() {
 
     setDragCurrent({ x: clientX, y: clientY });
     const offset = clientX - dragStart.x;
-    setDragOffset(offset);
+    // Apply resistance for smoother feel and invert direction so card follows finger
+    const resistance = 0.3;
+    setDragOffset(-offset * resistance);
   };
 
   const handleDragEnd = () => {
@@ -181,7 +183,7 @@ export function Flashcards() {
 
     setIsDragging(false);
 
-    const threshold = 150; // Minimum distance to trigger swipe
+    const threshold = 50; // Minimum distance to trigger swipe (reduced for better responsiveness)
     const offset = dragCurrent.x - dragStart.x;
 
     if (Math.abs(offset) > threshold) {
@@ -407,7 +409,11 @@ export function Flashcards() {
           <div className="flex items-center space-x-8 text-sm text-gray-500">
             <div
               className={`flex items-center transition-all duration-200 ${
-                isDragging && dragOffset < -50
+                isDragging &&
+                (() => {
+                  const offset = dragCurrent.x - dragStart.x;
+                  return offset < -50;
+                })()
                   ? "text-red-600 font-bold scale-110"
                   : ""
               }`}
@@ -417,7 +423,11 @@ export function Flashcards() {
             </div>
             <div
               className={`flex items-center transition-all duration-200 ${
-                isDragging && dragOffset > 50
+                isDragging &&
+                (() => {
+                  const offset = dragCurrent.x - dragStart.x;
+                  return offset > 50;
+                })()
                   ? "text-green-600 font-bold scale-110"
                   : ""
               }`}
@@ -433,22 +443,27 @@ export function Flashcards() {
       <div className="flex justify-center">
         <div className="relative w-full max-w-2xl h-[500px] perspective-1000">
           {/* Drag feedback overlay */}
-          {isDragging && showTranslation && (
-            <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
-              {dragOffset > 50 && (
-                <div className="bg-green-500/20 backdrop-blur-sm rounded-2xl p-8 border-2 border-green-500">
-                  <Heart className="h-16 w-16 text-green-500 mx-auto mb-2" />
-                  <p className="text-green-600 font-bold text-xl">YES!</p>
+          {isDragging &&
+            showTranslation &&
+            (() => {
+              const offset = dragCurrent.x - dragStart.x;
+              return (
+                <div className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
+                  {offset > 15 && (
+                    <div className="bg-green-500/20 backdrop-blur-sm rounded-2xl p-8 border-2 border-green-500">
+                      <Heart className="h-16 w-16 text-green-500 mx-auto mb-2" />
+                      <p className="text-green-600 font-bold text-xl">YES!</p>
+                    </div>
+                  )}
+                  {offset < -15 && (
+                    <div className="bg-red-500/20 backdrop-blur-sm rounded-2xl p-8 border-2 border-red-500">
+                      <XCircle className="h-16 w-16 text-red-500 mx-auto mb-2" />
+                      <p className="text-red-600 font-bold text-xl">NO!</p>
+                    </div>
+                  )}
                 </div>
-              )}
-              {dragOffset < -50 && (
-                <div className="bg-red-500/20 backdrop-blur-sm rounded-2xl p-8 border-2 border-red-500">
-                  <XCircle className="h-16 w-16 text-red-500 mx-auto mb-2" />
-                  <p className="text-red-600 font-bold text-xl">NO!</p>
-                </div>
-              )}
-            </div>
-          )}
+              );
+            })()}
           <div
             className={`relative w-full h-full transition-transform duration-600 transform-style-preserve-3d ${
               showTranslation ? "rotate-y-180" : ""
@@ -457,21 +472,26 @@ export function Flashcards() {
             }`}
             style={{
               transformStyle: "preserve-3d",
-              transition: isDragging ? "none" : "transform 0.6s ease-in-out",
+              transition: isDragging
+                ? "none"
+                : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               transform: showTranslation
                 ? `rotateY(180deg) translateX(${dragOffset}px) rotateZ(${
-                    dragOffset * 0.1
+                    dragOffset * 0.05
                   }deg)`
                 : `rotateY(0deg) translateX(${dragOffset}px) rotateZ(${
-                    dragOffset * 0.1
+                    dragOffset * 0.05
                   }deg)`,
-              opacity: isDragging ? 0.9 : 1,
+              opacity: isDragging ? 0.95 : 1,
               filter: isDragging
-                ? dragOffset > 50
-                  ? "hue-rotate(120deg) saturate(1.2)" // Green tint for right swipe
-                  : dragOffset < -50
-                  ? "hue-rotate(-60deg) saturate(1.2)" // Red tint for left swipe
-                  : "none"
+                ? (() => {
+                    const offset = dragCurrent.x - dragStart.x;
+                    return offset > 15
+                      ? "hue-rotate(-60deg) saturate(1.2)" // Red tint for right swipe (YES)
+                      : offset < -15
+                      ? "hue-rotate(120deg) saturate(1.2)" // Green tint for left swipe (NO)
+                      : "none";
+                  })()
                 : "none",
             }}
             onMouseDown={handleMouseDown}
