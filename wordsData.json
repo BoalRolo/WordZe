@@ -1,0 +1,364 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-01-20",
+    "description": "WordZe vocabulary data organized by categories from PDFs",
+    "totalWords": 0,
+    "categories": {
+      "general_nouns": "General nouns from Generalnouns.pdf",
+      "verbs_prepositions": "Verbs and prepositions from Verbs_and_Prepositions.pdf",
+      "vocabulary_idioms": "Vocabulary and idioms from Vocabulary_and_Idioms_(Expressions).pdf",
+      "adjectives": "Adjectives from Adjectives_.pdf"
+    }
+  },
+  "words": [
+    {
+      "id": "gen_001",
+      "word": "achievement",
+      "translation": "conquista, realização",
+      "type": "noun",
+      "category": "general_nouns",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Winning the championship was his greatest achievement.",
+          "translation": "Ganhar o campeonato foi sua maior conquista."
+        },
+        {
+          "sentence": "The company celebrated its latest achievement.",
+          "translation": "A empresa celebrou sua mais recente realização."
+        }
+      ],
+      "notes": "Something accomplished successfully, especially through effort or skill."
+    },
+    {
+      "id": "gen_002",
+      "word": "opportunity",
+      "translation": "oportunidade",
+      "type": "noun",
+      "category": "general_nouns",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "This job offers great opportunities for growth.",
+          "translation": "Este trabalho oferece grandes oportunidades de crescimento."
+        },
+        {
+          "sentence": "Don't miss this opportunity to learn something new.",
+          "translation": "Não perca esta oportunidade de aprender algo novo."
+        }
+      ]
+    },
+    {
+      "id": "gen_003",
+      "word": "responsibility",
+      "translation": "responsabilidade",
+      "type": "noun",
+      "category": "general_nouns",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Taking care of children is a big responsibility.",
+          "translation": "Cuidar de crianças é uma grande responsabilidade."
+        },
+        {
+          "sentence": "It's your responsibility to complete the project on time.",
+          "translation": "É sua responsabilidade completar o projeto no prazo."
+        }
+      ]
+    },
+    {
+      "id": "gen_004",
+      "word": "challenge",
+      "translation": "desafio",
+      "type": "noun",
+      "category": "general_nouns",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Learning a new language is a great challenge.",
+          "translation": "Aprender um novo idioma é um grande desafio."
+        }
+      ]
+    },
+    {
+      "id": "gen_005",
+      "word": "knowledge",
+      "translation": "conhecimento",
+      "type": "noun",
+      "category": "general_nouns",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Knowledge is power.",
+          "translation": "Conhecimento é poder."
+        }
+      ]
+    },
+    {
+      "id": "verb_001",
+      "word": "rely on",
+      "translation": "depender de, contar com",
+      "type": "phrasal verb",
+      "category": "verbs_prepositions",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "You can rely on me to help you.",
+          "translation": "Você pode contar comigo para ajudá-lo."
+        },
+        {
+          "sentence": "The company relies on its employees.",
+          "translation": "A empresa depende de seus funcionários."
+        }
+      ]
+    },
+    {
+      "id": "verb_002",
+      "word": "deal with",
+      "translation": "lidar com, tratar de",
+      "type": "phrasal verb",
+      "category": "verbs_prepositions",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "I need to deal with this problem immediately.",
+          "translation": "Preciso lidar com este problema imediatamente."
+        },
+        {
+          "sentence": "How do you deal with stress?",
+          "translation": "Como você lida com o estresse?"
+        }
+      ]
+    },
+    {
+      "id": "verb_003",
+      "word": "look forward to",
+      "translation": "aguardar com expectativa",
+      "type": "phrasal verb",
+      "category": "verbs_prepositions",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "I'm looking forward to the weekend.",
+          "translation": "Estou aguardando o fim de semana com expectativa."
+        },
+        {
+          "sentence": "We're looking forward to meeting you.",
+          "translation": "Estamos ansiosos para conhecê-lo."
+        }
+      ]
+    },
+    {
+      "id": "verb_004",
+      "word": "get along with",
+      "translation": "dar-se bem com",
+      "type": "phrasal verb",
+      "category": "verbs_prepositions",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "I get along well with my colleagues.",
+          "translation": "Eu me dou bem com meus colegas."
+        }
+      ]
+    },
+    {
+      "id": "verb_005",
+      "word": "run out of",
+      "translation": "ficar sem, esgotar",
+      "type": "phrasal verb",
+      "category": "verbs_prepositions",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "We're running out of time.",
+          "translation": "Estamos ficando sem tempo."
+        }
+      ]
+    },
+    {
+      "id": "idiom_001",
+      "word": "break the ice",
+      "translation": "quebrar o gelo",
+      "type": "idiom",
+      "category": "vocabulary_idioms",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He told a joke to break the ice at the meeting.",
+          "translation": "Ele contou uma piada para quebrar o gelo na reunião."
+        },
+        {
+          "sentence": "Let's play a game to break the ice.",
+          "translation": "Vamos jogar um jogo para quebrar o gelo."
+        }
+      ],
+      "notes": "To initiate conversation in a social setting; to make people feel more comfortable."
+    },
+    {
+      "id": "idiom_002",
+      "word": "hit the nail on the head",
+      "translation": "acertar em cheio",
+      "type": "idiom",
+      "category": "vocabulary_idioms",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "You hit the nail on the head with that analysis.",
+          "translation": "Você acertou em cheio com essa análise."
+        }
+      ]
+    },
+    {
+      "id": "idiom_003",
+      "word": "piece of cake",
+      "translation": "mamão com açúcar, muito fácil",
+      "type": "idiom",
+      "category": "vocabulary_idioms",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "This exam was a piece of cake.",
+          "translation": "Esta prova foi mamão com açúcar."
+        },
+        {
+          "sentence": "Don't worry, it's a piece of cake.",
+          "translation": "Não se preocupe, é muito fácil."
+        }
+      ]
+    },
+    {
+      "id": "idiom_004",
+      "word": "spill the beans",
+      "translation": "contar o segredo, revelar",
+      "type": "idiom",
+      "category": "vocabulary_idioms",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Don't spill the beans about the surprise party.",
+          "translation": "Não conte sobre a festa surpresa."
+        }
+      ]
+    },
+    {
+      "id": "idiom_005",
+      "word": "under the weather",
+      "translation": "indisposto, doente",
+      "type": "idiom",
+      "category": "vocabulary_idioms",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "I'm feeling a bit under the weather today.",
+          "translation": "Estou me sentindo um pouco indisposto hoje."
+        }
+      ]
+    },
+    {
+      "id": "adj_001",
+      "word": "outstanding",
+      "translation": "excepcional, notável",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "She did an outstanding job on the project.",
+          "translation": "Ela fez um trabalho excepcional no projeto."
+        },
+        {
+          "sentence": "His performance was outstanding.",
+          "translation": "Sua performance foi notável."
+        }
+      ]
+    },
+    {
+      "id": "adj_002",
+      "word": "remarkable",
+      "translation": "notável, extraordinário",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The view from the mountain was remarkable.",
+          "translation": "A vista da montanha era notável."
+        },
+        {
+          "sentence": "She made remarkable progress in her studies.",
+          "translation": "Ela fez progresso notável em seus estudos."
+        }
+      ]
+    },
+    {
+      "id": "adj_003",
+      "word": "tremendous",
+      "translation": "tremendo, enorme",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "There was a tremendous amount of work to do.",
+          "translation": "Havia uma quantidade tremenda de trabalho para fazer."
+        },
+        {
+          "sentence": "The concert was a tremendous success.",
+          "translation": "O concerto foi um tremendo sucesso."
+        }
+      ]
+    },
+    {
+      "id": "adj_004",
+      "word": "significant",
+      "translation": "significativo, importante",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "This is a significant improvement.",
+          "translation": "Esta é uma melhoria significativa."
+        }
+      ]
+    },
+    {
+      "id": "adj_005",
+      "word": "essential",
+      "translation": "essencial, fundamental",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Water is essential for life.",
+          "translation": "A água é essencial para a vida."
+        },
+        {
+          "sentence": "This skill is essential for the job.",
+          "translation": "Esta habilidade é essencial para o trabalho."
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "byCategory": {
+      "general_nouns": 5,
+      "verbs_prepositions": 5,
+      "vocabulary_idioms": 5,
+      "adjectives": 5
+    },
+    "byType": {
+      "noun": 5,
+      "phrasal verb": 5,
+      "idiom": 5,
+      "adjective": 5
+    },
+    "byDifficulty": {
+      "intermediate": 18,
+      "advanced": 2
+    }
+  }
+}

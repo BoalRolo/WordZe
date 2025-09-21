@@ -1,0 +1,927 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "created": "2025-01-20",
+    "description": "Adjectives dataset from brother's collection",
+    "source": "Adjectives folder",
+    "totalWords": 20,
+    "category": "adjectives"
+  },
+  "words": [
+    {
+      "id": "adj_001",
+      "word": "ambivalent",
+      "translation": "ambivalente, com sentimentos mistos",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "She felt ambivalent about accepting the job offer.",
+          "translation": "Ela se sentia ambivalente sobre aceitar a oferta de trabalho."
+        },
+        {
+          "sentence": "I have ambivalent feelings about this decision.",
+          "translation": "Tenho sentimentos ambivalentes sobre esta decisão."
+        }
+      ],
+      "notes": "Having mixed feelings about something or someone"
+    },
+    {
+      "id": "adj_002",
+      "word": "aloof",
+      "translation": "distante, indiferente, alheado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He remained aloof during the entire meeting.",
+          "translation": "Ele permaneceu distante durante toda a reunião."
+        },
+        {
+          "sentence": "She's always been aloof with strangers.",
+          "translation": "Ela sempre foi indiferente com estranhos."
+        }
+      ],
+      "notes": "Standoffish, distant, indifferent"
+    },
+    {
+      "id": "adj_003",
+      "word": "distressed",
+      "translation": "aflito, angustiado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The distressed mother couldn't find her child.",
+          "translation": "A mãe aflita não conseguia encontrar seu filho."
+        },
+        {
+          "sentence": "He looked distressed after hearing the news.",
+          "translation": "Ele parecia angustiado após ouvir as notícias."
+        }
+      ]
+    },
+    {
+      "id": "adj_004",
+      "word": "witty",
+      "translation": "inteligente, espirituoso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "She's known for her witty remarks.",
+          "translation": "Ela é conhecida por seus comentários espirituosos."
+        },
+        {
+          "sentence": "His witty sense of humor always makes us laugh.",
+          "translation": "Seu senso de humor espirituoso sempre nos faz rir."
+        }
+      ]
+    },
+    {
+      "id": "adj_005",
+      "word": "wrinkled",
+      "translation": "enrugado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "beginner",
+      "examples": [
+        {
+          "sentence": "The old man had a wrinkled face.",
+          "translation": "O velho tinha um rosto enrugado."
+        },
+        {
+          "sentence": "She ironed the wrinkled shirt.",
+          "translation": "Ela passou a camisa enrugada."
+        }
+      ]
+    },
+    {
+      "id": "adj_006",
+      "word": "withered",
+      "translation": "murcho, seco, ressequido",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The withered flowers needed water.",
+          "translation": "As flores murchas precisavam de água."
+        },
+        {
+          "sentence": "The withered leaves fell from the tree.",
+          "translation": "As folhas ressequidas caíram da árvore."
+        }
+      ]
+    },
+    {
+      "id": "adj_007",
+      "word": "relentless",
+      "translation": "implacável, incansável, inflexível",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The relentless rain continued for days.",
+          "translation": "A chuva implacável continuou por dias."
+        },
+        {
+          "sentence": "She was relentless in pursuing her goals.",
+          "translation": "Ela foi incansável em perseguir seus objetivos."
+        }
+      ],
+      "notes": "Unrelenting, inflexible, persistent"
+    },
+    {
+      "id": "adj_008",
+      "word": "ruthless",
+      "translation": "implacável, cruel, impiedoso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The ruthless dictator oppressed his people.",
+          "translation": "O ditador implacável oprimiu seu povo."
+        },
+        {
+          "sentence": "He was ruthless in business negotiations.",
+          "translation": "Ele foi impiedoso nas negociações de negócios."
+        }
+      ]
+    },
+    {
+      "id": "adj_009",
+      "word": "reckless",
+      "translation": "imprudente",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The reckless driver caused the accident.",
+          "translation": "O motorista imprudente causou o acidente."
+        },
+        {
+          "sentence": "Don't be reckless with your money.",
+          "translation": "Não seja imprudente com seu dinheiro."
+        }
+      ]
+    },
+    {
+      "id": "adj_010",
+      "word": "restless",
+      "translation": "inquieto",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The restless child couldn't sit still.",
+          "translation": "A criança inquieta não conseguia ficar parada."
+        },
+        {
+          "sentence": "I feel restless when I have nothing to do.",
+          "translation": "Me sinto inquieto quando não tenho nada para fazer."
+        }
+      ]
+    },
+    {
+      "id": "adj_011",
+      "word": "restrained",
+      "translation": "contido",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He showed restrained anger during the argument.",
+          "translation": "Ele mostrou raiva contida durante a discussão."
+        },
+        {
+          "sentence": "Her restrained response surprised everyone.",
+          "translation": "Sua resposta contida surpreendeu a todos."
+        }
+      ]
+    },
+    {
+      "id": "adj_012",
+      "word": "cunning",
+      "translation": "astuto",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The cunning fox escaped from the trap.",
+          "translation": "A raposa astuta escapou da armadilha."
+        },
+        {
+          "sentence": "She used cunning tactics to win the game.",
+          "translation": "Ela usou táticas astutas para ganhar o jogo."
+        }
+      ]
+    },
+    {
+      "id": "adj_013",
+      "word": "outrageous",
+      "translation": "escandaloso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The politician made outrageous claims.",
+          "translation": "O político fez alegações escandalosas."
+        },
+        {
+          "sentence": "That's an outrageous price for a simple meal.",
+          "translation": "Esse é um preço escandaloso para uma refeição simples."
+        }
+      ],
+      "notes": "Scandalous, shocking, unacceptable"
+    },
+    {
+      "id": "adj_014",
+      "word": "inadmissible",
+      "translation": "inadmissível, inaceitável",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The evidence was ruled inadmissible in court.",
+          "translation": "A evidência foi considerada inadmissível no tribunal."
+        },
+        {
+          "sentence": "Such behavior is inadmissible in this company.",
+          "translation": "Tal comportamento é inadmissível nesta empresa."
+        }
+      ],
+      "notes": "Unacceptable, untenable, unjustifiable"
+    },
+    {
+      "id": "adj_015",
+      "word": "intriguing",
+      "translation": "intrigante",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The book has an intriguing plot.",
+          "translation": "O livro tem um enredo intrigante."
+        },
+        {
+          "sentence": "She found his proposal intriguing.",
+          "translation": "Ela achou sua proposta intrigante."
+        }
+      ]
+    },
+    {
+      "id": "adj_016",
+      "word": "wronged",
+      "translation": "injustiçado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The wronged employee filed a complaint.",
+          "translation": "O funcionário injustiçado apresentou uma reclamação."
+        },
+        {
+          "sentence": "She felt wronged by the unfair treatment.",
+          "translation": "Ela se sentiu injustiçada pelo tratamento injusto."
+        }
+      ],
+      "notes": "Unjustified, treated unfairly"
+    },
+    {
+      "id": "adj_017",
+      "word": "weary",
+      "translation": "cansado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The weary traveler finally reached home.",
+          "translation": "O viajante cansado finalmente chegou em casa."
+        },
+        {
+          "sentence": "I'm weary of all this arguing.",
+          "translation": "Estou cansado de toda essa discussão."
+        }
+      ],
+      "notes": "Pronunciation: /ˈwɪəri/ (weeri)"
+    },
+    {
+      "id": "adj_018",
+      "word": "wary",
+      "translation": "cauteloso, desconfiado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Be wary of strangers offering help.",
+          "translation": "Seja cauteloso com estranhos oferecendo ajuda."
+        },
+        {
+          "sentence": "She was wary of his promises.",
+          "translation": "Ela estava desconfiada de suas promessas."
+        }
+      ],
+      "notes": "Aware, cautious, suspicious"
+    },
+    {
+      "id": "adj_019",
+      "word": "goofy",
+      "translation": "pateta",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "beginner",
+      "examples": [
+        {
+          "sentence": "He has a goofy sense of humor.",
+          "translation": "Ele tem um senso de humor pateta."
+        },
+        {
+          "sentence": "The goofy dog made everyone laugh.",
+          "translation": "O cachorro pateta fez todos rirem."
+        }
+      ]
+    },
+    {
+      "id": "adj_020",
+      "word": "grumpy",
+      "translation": "mal humorado, resmungão",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "beginner",
+      "examples": [
+        {
+          "sentence": "The grumpy old man complained about everything.",
+          "translation": "O velho mal humorado reclamava de tudo."
+        },
+        {
+          "sentence": "Don't be so grumpy in the morning.",
+          "translation": "Não seja tão mal humorado de manhã."
+        }
+      ],
+      "notes": "Crabby, grumbler, muttering"
+    },
+    {
+      "id": "adj_021",
+      "word": "gloomy",
+      "translation": "sombrio",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The gloomy weather matched his mood.",
+          "translation": "O tempo sombrio combinava com seu humor."
+        },
+        {
+          "sentence": "She painted a gloomy picture of the future.",
+          "translation": "Ela pintou um quadro sombrio do futuro."
+        }
+      ]
+    },
+    {
+      "id": "adj_022",
+      "word": "dreadful",
+      "translation": "terrível",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The accident was dreadful.",
+          "translation": "O acidente foi terrível."
+        },
+        {
+          "sentence": "I had a dreadful headache yesterday.",
+          "translation": "Tive uma dor de cabeça terrível ontem."
+        }
+      ]
+    },
+    {
+      "id": "adj_023",
+      "word": "ghastly",
+      "translation": "horrível",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The crime scene was ghastly.",
+          "translation": "A cena do crime era horrível."
+        },
+        {
+          "sentence": "She looked ghastly after the illness.",
+          "translation": "Ela parecia horrível após a doença."
+        }
+      ]
+    },
+    {
+      "id": "adj_024",
+      "word": "tedious",
+      "translation": "tedioso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The meeting was so tedious that everyone fell asleep.",
+          "translation": "A reunião foi tão tediosa que todos adormeceram."
+        },
+        {
+          "sentence": "I find this work very tedious and boring.",
+          "translation": "Acho este trabalho muito tedioso e chato."
+        }
+      ],
+      "notes": "Pronunciation: /ˈtiːdiəs/ (teedious)"
+    },
+    {
+      "id": "adj_025",
+      "word": "tenacious",
+      "translation": "persistente, teimoso, obstinado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "She was tenacious in pursuing her dreams.",
+          "translation": "Ela foi persistente em perseguir seus sonhos."
+        },
+        {
+          "sentence": "The tenacious lawyer never gave up on the case.",
+          "translation": "O advogado teimoso nunca desistiu do caso."
+        }
+      ],
+      "notes": "Persistent, relentless, adamant"
+    },
+    {
+      "id": "adj_026",
+      "word": "unbearable",
+      "translation": "insuportável",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The heat was unbearable in the desert.",
+          "translation": "O calor era insuportável no deserto."
+        },
+        {
+          "sentence": "His behavior became unbearable after a while.",
+          "translation": "O comportamento dele se tornou insuportável depois de um tempo."
+        }
+      ]
+    },
+    {
+      "id": "adj_027",
+      "word": "thrilling",
+      "translation": "empolgante",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The roller coaster ride was absolutely thrilling.",
+          "translation": "O passeio na montanha-russa foi absolutamente empolgante."
+        },
+        {
+          "sentence": "She had a thrilling adventure in the mountains.",
+          "translation": "Ela teve uma aventura empolgante nas montanhas."
+        }
+      ]
+    },
+    {
+      "id": "adj_028",
+      "word": "flaccid",
+      "translation": "flácido",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The balloon became flaccid after losing air.",
+          "translation": "O balão ficou flácido após perder ar."
+        },
+        {
+          "sentence": "His muscles were flaccid after the long illness.",
+          "translation": "Os músculos dele estavam flácidos após a longa doença."
+        }
+      ]
+    },
+    {
+      "id": "adj_029",
+      "word": "fetid",
+      "translation": "fedorento",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The fetid smell from the garbage was overwhelming.",
+          "translation": "O cheiro fedorento do lixo era avassalador."
+        },
+        {
+          "sentence": "The fetid water in the pond was contaminated.",
+          "translation": "A água fedorenta do lago estava contaminada."
+        }
+      ],
+      "notes": "Smelly, stinky"
+    },
+    {
+      "id": "adj_030",
+      "word": "sly",
+      "translation": "manhoso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The sly fox managed to escape from the trap.",
+          "translation": "A raposa manhosa conseguiu escapar da armadilha."
+        },
+        {
+          "sentence": "He gave her a sly smile before leaving.",
+          "translation": "Ele deu um sorriso manhoso antes de sair."
+        }
+      ]
+    },
+    {
+      "id": "adj_031",
+      "word": "smug",
+      "translation": "presunçoso, convencido",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He had a smug expression after winning the game.",
+          "translation": "Ele tinha uma expressão presunçosa após ganhar o jogo."
+        },
+        {
+          "sentence": "Don't be so smug about your success.",
+          "translation": "Não seja tão convencido sobre seu sucesso."
+        }
+      ],
+      "notes": "Cocky, self-satisfied"
+    },
+    {
+      "id": "adj_032",
+      "word": "zany",
+      "translation": "excêntrico",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The comedian had a zany sense of humor.",
+          "translation": "O comediante tinha um senso de humor excêntrico."
+        },
+        {
+          "sentence": "She wore a zany hat to the party.",
+          "translation": "Ela usou um chapéu excêntrico na festa."
+        }
+      ]
+    },
+    {
+      "id": "adj_033",
+      "word": "astonishing",
+      "translation": "surpreendente, espantoso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The magician's trick was astonishing.",
+          "translation": "O truque do mágico foi surpreendente."
+        },
+        {
+          "sentence": "She made an astonishing recovery from her illness.",
+          "translation": "Ela fez uma recuperação espantosa de sua doença."
+        }
+      ],
+      "notes": "Dumbstruck, stunned, amazed"
+    },
+    {
+      "id": "adj_034",
+      "word": "clumsy",
+      "translation": "desajeitado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "beginner",
+      "examples": [
+        {
+          "sentence": "He was so clumsy that he dropped everything.",
+          "translation": "Ele era tão desajeitado que deixava tudo cair."
+        },
+        {
+          "sentence": "The clumsy waiter spilled the soup.",
+          "translation": "O garçom desajeitado derramou a sopa."
+        }
+      ],
+      "notes": "Clumsily (adverb)"
+    },
+    {
+      "id": "adj_035",
+      "word": "sloppy",
+      "translation": "desleixado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "His sloppy appearance didn't make a good impression.",
+          "translation": "Sua aparência desleixada não causou boa impressão."
+        },
+        {
+          "sentence": "The work was done in a sloppy manner.",
+          "translation": "O trabalho foi feito de forma desleixada."
+        }
+      ],
+      "notes": "Poorly done work, lack of attention to detail"
+    },
+    {
+      "id": "adj_036",
+      "word": "elated",
+      "translation": "eufórico, exaltado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "She was elated when she heard the good news.",
+          "translation": "Ela ficou eufórica quando ouviu as boas notícias."
+        },
+        {
+          "sentence": "The team was elated after winning the championship.",
+          "translation": "A equipe ficou exaltada após ganhar o campeonato."
+        }
+      ]
+    },
+    {
+      "id": "adj_037",
+      "word": "sluggish",
+      "translation": "lento",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The computer was running very sluggish today.",
+          "translation": "O computador estava funcionando muito lento hoje."
+        },
+        {
+          "sentence": "He felt sluggish after eating too much.",
+          "translation": "Ele se sentiu lento após comer demais."
+        }
+      ]
+    },
+    {
+      "id": "adj_038",
+      "word": "seldom",
+      "translation": "raro, raramente",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "Such opportunities are seldom available.",
+          "translation": "Tais oportunidades raramente estão disponíveis."
+        },
+        {
+          "sentence": "He seldom visits his hometown anymore.",
+          "translation": "Ele raramente visita sua cidade natal agora."
+        }
+      ],
+      "notes": "Rare, rarely, scarcely"
+    },
+    {
+      "id": "adj_039",
+      "word": "meek",
+      "translation": "manso",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The meek student never spoke up in class.",
+          "translation": "O estudante manso nunca falava na aula."
+        },
+        {
+          "sentence": "She had a meek personality but was very kind.",
+          "translation": "Ela tinha uma personalidade mansa mas era muito gentil."
+        }
+      ]
+    },
+    {
+      "id": "adj_040",
+      "word": "oblivious",
+      "translation": "desatento",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He was oblivious to the danger around him.",
+          "translation": "Ele estava desatento ao perigo ao seu redor."
+        },
+        {
+          "sentence": "She seemed oblivious to the noise in the room.",
+          "translation": "Ela parecia desatenta ao barulho na sala."
+        }
+      ],
+      "notes": "Inattentive, unaware"
+    },
+    {
+      "id": "adj_041",
+      "word": "unyielding",
+      "translation": "inflexível",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The unyielding manager refused to change his decision.",
+          "translation": "O gerente inflexível se recusou a mudar sua decisão."
+        },
+        {
+          "sentence": "She had an unyielding determination to succeed.",
+          "translation": "Ela tinha uma determinação inflexível para ter sucesso."
+        }
+      ]
+    },
+    {
+      "id": "adj_042",
+      "word": "predatory",
+      "translation": "predatório",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The predatory animal hunted its prey silently.",
+          "translation": "O animal predatório caçou sua presa silenciosamente."
+        },
+        {
+          "sentence": "The company was accused of predatory pricing.",
+          "translation": "A empresa foi acusada de preços predatórios."
+        }
+      ]
+    },
+    {
+      "id": "adj_043",
+      "word": "wretched",
+      "translation": "desgraçado, miserável",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The wretched conditions in the prison were appalling.",
+          "translation": "As condições desgraçadas na prisão eram chocantes."
+        },
+        {
+          "sentence": "He felt wretched after losing his job.",
+          "translation": "Ele se sentiu miserável após perder o emprego."
+        }
+      ],
+      "notes": "Pronunciation: /ˈretʃɪd/ (wretXÉD)"
+    },
+    {
+      "id": "adj_044",
+      "word": "perfunctory",
+      "translation": "superficial",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "He gave a perfunctory apology without meaning it.",
+          "translation": "Ele deu um pedido de desculpas superficial sem querer dizer."
+        },
+        {
+          "sentence": "The inspection was done in a perfunctory manner.",
+          "translation": "A inspeção foi feita de forma superficial."
+        }
+      ]
+    },
+    {
+      "id": "adj_045",
+      "word": "rudimentary",
+      "translation": "rudimentar",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "The device had only rudimentary functions.",
+          "translation": "O dispositivo tinha apenas funções rudimentares."
+        },
+        {
+          "sentence": "His knowledge of the subject was rudimentary.",
+          "translation": "O conhecimento dele sobre o assunto era rudimentar."
+        }
+      ]
+    },
+    {
+      "id": "adj_046",
+      "word": "despicable",
+      "translation": "desprezível",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "His despicable behavior shocked everyone.",
+          "translation": "Seu comportamento desprezível chocou a todos."
+        },
+        {
+          "sentence": "The crime was truly despicable.",
+          "translation": "O crime foi verdadeiramente desprezível."
+        }
+      ]
+    },
+    {
+      "id": "adj_047",
+      "word": "intertwined",
+      "translation": "entrelaçado, ligado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "Their lives were deeply intertwined.",
+          "translation": "As vidas deles estavam profundamente entrelaçadas."
+        },
+        {
+          "sentence": "The roots of the trees were intertwined underground.",
+          "translation": "As raízes das árvores estavam entrelaçadas no subsolo."
+        }
+      ]
+    },
+    {
+      "id": "adj_048",
+      "word": "backward",
+      "translation": "retrógrado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The country's policies were considered backward.",
+          "translation": "As políticas do país eram consideradas retrógradas."
+        },
+        {
+          "sentence": "He had backward views on women's rights.",
+          "translation": "Ele tinha visões retrógradas sobre os direitos das mulheres."
+        }
+      ]
+    },
+    {
+      "id": "adj_049",
+      "word": "shivered",
+      "translation": "arrepiado",
+      "type": "adjective",
+      "category": "adjectives",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "She was shivered with cold in the winter wind.",
+          "translation": "Ela estava arrepiada de frio no vento de inverno."
+        },
+        {
+          "sentence": "The scary movie left him shivered with fear.",
+          "translation": "O filme de terror o deixou arrepiado de medo."
+        }
+      ]
+    }
+  ],
+  "statistics": {
+    "totalWords": 49,
+    "byDifficulty": {
+      "beginner": 4,
+      "intermediate": 32,
+      "advanced": 13
+    },
+    "byType": {
+      "adjective": 49
+    },
+    "byCategory": {
+      "adjectives": 49
+    }
+  }
+}

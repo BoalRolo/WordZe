@@ -1,0 +1,82 @@
+{
+  "words": [
+    {
+      "word": "ambivalent",
+      "translation": "ambivalente, com sentimentos mistos",
+      "type": "adjective",
+      "difficulty": "advanced",
+      "examples": [
+        {
+          "sentence": "She felt ambivalent about accepting the job offer.",
+          "translation": "Ela se sentia ambivalente sobre aceitar a oferta de trabalho."
+        },
+        {
+          "sentence": "I have ambivalent feelings about this decision.",
+          "translation": "Tenho sentimentos ambivalentes sobre esta decisão."
+        }
+      ],
+      "notes": "Having mixed feelings about something or someone"
+    },
+    {
+      "word": "aloof",
+      "translation": "distante, indiferente, alheado",
+      "type": "adjective",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "He remained aloof during the entire meeting.",
+          "translation": "Ele permaneceu distante durante toda a reunião."
+        },
+        {
+          "sentence": "She's always been aloof with strangers.",
+          "translation": "Ela sempre foi indiferente com estranhos."
+        }
+      ],
+      "notes": "Standoffish, distant, indifferent"
+    },
+    {
+      "word": "distressed",
+      "translation": "aflito, angustiado",
+      "type": "adjective",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The distressed mother called for help.",
+          "translation": "A mãe aflita chamou por ajuda."
+        }
+      ],
+      "notes": "Upset, worried, troubled"
+    },
+    {
+      "word": "witty",
+      "translation": "inteligente, espirituoso",
+      "type": "adjective",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "His witty remarks made everyone laugh.",
+          "translation": "Suas observações espirituosas fizeram todos rirem."
+        }
+      ],
+      "notes": "Clever, humorous, quick-witted"
+    },
+    {
+      "word": "tedious",
+      "translation": "tedioso",
+      "type": "adjective",
+      "difficulty": "intermediate",
+      "examples": [
+        {
+          "sentence": "The meeting was so tedious that everyone fell asleep.",
+          "translation": "A reunião foi tão tediosa que todos adormeceram."
+        },
+        {
+          "sentence": "I find this work very tedious and boring.",
+          "translation": "Acho este trabalho muito tedioso e chato."
+        }
+      ],
+      "notes": "Pronunciation: /ˈtiːdiəs/ (teedious)"
+    }
+  ]
+}
+
