@@ -11,8 +11,6 @@ export interface WordDoc {
   word: string
   translation: string
   type?: 'verb' | 'noun' | 'phrasal verb' | 'adjective' | 'adverb'
-  example?: string
-  examples?: string[] // Multiple example sentences
   notes?: string
   createdAt: Timestamp
   attempts: number

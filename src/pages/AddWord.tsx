@@ -47,7 +47,6 @@ export function AddWord() {
         formData.word.trim(),
         formData.translation.trim(),
         formData.type?.trim() || undefined,
-        undefined, // No longer using the old example field
         formData.notes?.trim() || undefined
       );
 

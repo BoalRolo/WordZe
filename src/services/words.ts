@@ -20,7 +20,6 @@ export class WordsService {
     word: string,
     translation: string,
     type?: string,
-    example?: string,
     notes?: string
   ): Promise<string> {
     // Validate word type
@@ -35,10 +34,9 @@ export class WordsService {
       type && validTypes.includes(type as any) ? (type as any) : undefined;
 
     const wordData: Omit<WordDoc, "createdAt"> = {
-      word,
-      translation,
+      word: word.toLowerCase().trim(),
+      translation: translation.toLowerCase().trim(),
       type: validatedType,
-      example: example || undefined,
       notes: notes || undefined,
       attempts: 0,
       successes: 0,
@@ -73,14 +71,23 @@ export class WordsService {
     userId: string,
     wordId: string,
     updates: Partial<
-      Pick<WordDoc, "word" | "translation" | "type" | "example" | "notes">
+      Pick<WordDoc, "word" | "translation" | "type" | "notes">
     >
   ): Promise<void> {
     const wordRef = doc(db, "users", userId, "words", wordId);
 
+    // Convert word and translation to lowercase if they exist
+    const processedUpdates = { ...updates };
+    if (processedUpdates.word) {
+      processedUpdates.word = processedUpdates.word.toLowerCase().trim();
+    }
+    if (processedUpdates.translation) {
+      processedUpdates.translation = processedUpdates.translation.toLowerCase().trim();
+    }
+
     // Remove undefined values before sending to Firestore
     const cleanUpdates = Object.fromEntries(
-      Object.entries(updates).filter(([_, value]) => value !== undefined)
+      Object.entries(processedUpdates).filter(([_, value]) => value !== undefined)
     );
 
     await updateDoc(wordRef, cleanUpdates);

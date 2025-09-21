@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ExamplesService } from "@/services/examples";
 import { ExampleSentence } from "@/types/models";
 import { Plus, Edit2, Trash2, Save, X, BookOpen } from "lucide-react";
+import { capitalizeSentence } from "@/utils/formatting";
 
 interface ExampleSentencesProps {
   userId: string;
@@ -243,11 +244,11 @@ export function ExampleSentences({
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <p className="text-gray-900 font-medium">
-                        "{example.sentence}"
+                        "{capitalizeSentence(example.sentence)}"
                       </p>
                       {example.translation && (
                         <p className="text-gray-600 text-sm mt-1">
-                          "{example.translation}"
+                          "{capitalizeSentence(example.translation)}"
                         </p>
                       )}
                     </div>

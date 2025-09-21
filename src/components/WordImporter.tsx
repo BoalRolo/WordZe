@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { WordsService } from "@/services/words";
 import { ExamplesService } from "@/services/examples";
+import { capitalizeWord, capitalizeSentence } from "@/utils/formatting";
 import {
   Upload,
   FileText,
@@ -374,4 +375,3 @@ export function WordImporter() {
     </div>
   );
 }
-

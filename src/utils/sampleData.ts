@@ -261,12 +261,11 @@ export async function addSampleWords(userId: string): Promise<void> {
     
     for (const sampleWord of sampleWords) {
       // Add the word
-      const wordId = await WordsService.addWord(
+      const wordId =       await WordsService.addWord(
         userId,
         sampleWord.word,
         sampleWord.translation,
         sampleWord.type,
-        undefined, // No old example field
         sampleWord.notes
       );
 

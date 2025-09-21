@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { HistoryService } from "@/services/history";
 import { QuizHistoryItem } from "@/types/models";
+import { capitalizeWord, capitalizeSentence } from "@/utils/formatting";
 import {
   Calendar,
   Clock,
@@ -29,7 +30,6 @@ export function History() {
       failCount: number;
       lastFailed: string;
       examples?: Array<{ sentence: string; translation?: string }>;
-      example?: string;
       type?: string;
     }>
   >([]);
@@ -329,15 +329,12 @@ export function History() {
             <div className="grid gap-4">
               {failedWords.map((item, index) => {
                 const isExpanded = expandedWords.has(item.wordId);
-                const hasExamples =
-                  (item.examples && item.examples.length > 0) ||
-                  (item.example && item.example.trim().length > 0);
+                const hasExamples = item.examples && item.examples.length > 0;
 
                 // Debug log
                 console.log(
                   `Word: ${item.word}, hasExamples: ${hasExamples}, examples:`,
                   item.examples,
-                  `example: ${item.example}`,
                   `wordId: ${item.wordId}`
                 );
 
@@ -358,10 +355,10 @@ export function History() {
                           </span>
                           <div className="flex-1">
                             <h3 className="text-2xl font-bold text-gray-900 mb-1">
-                              {item.word}
+                              {capitalizeWord(item.word)}
                             </h3>
                             <p className="text-lg text-gray-600 mb-2">
-                              {item.translation}
+                              {capitalizeWord(item.translation)}
                             </p>
                             {item.type && (
                               <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
@@ -408,37 +405,42 @@ export function History() {
                                     <BookOpen className="h-4 w-4 text-blue-600" />
                                     <h4 className="text-sm font-semibold text-gray-700">
                                       Example Sentences (
-                                      {item.examples ? item.examples.length : 1}
-                                      )
+                                      {item.examples?.length || 0})
                                     </h4>
                                   </div>
                                   <div className="space-y-3">
-                                    {(
-                                      item.examples || [
-                                        { sentence: item.example! },
-                                      ]
-                                    ).map((example, exampleIndex) => (
-                                      <div
-                                        key={exampleIndex}
-                                        className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100"
-                                      >
-                                        <div className="flex items-start space-x-2">
-                                          <span className="text-xs font-bold text-blue-600 bg-blue-200 px-2 py-1 rounded-full">
-                                            {exampleIndex + 1}
-                                          </span>
-                                          <div className="flex-1">
-                                            <p className="text-sm text-gray-800 italic leading-relaxed mb-2">
-                                              "{example.sentence}"
-                                            </p>
-                                            {example.translation && (
-                                              <p className="text-sm text-gray-600 leading-relaxed">
-                                                "{example.translation}"
+                                    {(item.examples || []).map(
+                                      (example, exampleIndex) => (
+                                        <div
+                                          key={exampleIndex}
+                                          className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100"
+                                        >
+                                          <div className="flex items-start space-x-2">
+                                            <span className="text-xs font-bold text-blue-600 bg-blue-200 px-2 py-1 rounded-full">
+                                              {exampleIndex + 1}
+                                            </span>
+                                            <div className="flex-1">
+                                              <p className="text-sm text-gray-800 italic leading-relaxed mb-2">
+                                                "
+                                                {capitalizeSentence(
+                                                  example.sentence
+                                                )}
+                                                "
                                               </p>
-                                            )}
+                                              {example.translation && (
+                                                <p className="text-sm text-gray-600 leading-relaxed">
+                                                  "
+                                                  {capitalizeSentence(
+                                                    example.translation
+                                                  )}
+                                                  "
+                                                </p>
+                                              )}
+                                            </div>
                                           </div>
                                         </div>
-                                      </div>
-                                    ))}
+                                      )
+                                    )}
                                   </div>
                                 </>
                               ) : (
@@ -548,7 +550,8 @@ export function History() {
                             key={index}
                             className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800"
                           >
-                            {word.word} → {word.translation}
+                            {capitalizeWord(word.word)} →{" "}
+                            {capitalizeWord(word.translation)}
                           </span>
                         ))}
                       </div>

@@ -8,6 +8,7 @@ import { ExampleSentences } from "@/components/ExampleSentences";
 import {
   formatWordForDisplay,
   formatTranslationForDisplay,
+  capitalizeSentence,
 } from "@/utils/formatting";
 import {
   Plus,
@@ -46,7 +47,14 @@ export function Words() {
 
   useEffect(() => {
     applyFilters();
-  }, [words, difficultyFilter, showFailedOnly, typeFilter, hasExamplesFilter, searchQuery]);
+  }, [
+    words,
+    difficultyFilter,
+    showFailedOnly,
+    typeFilter,
+    hasExamplesFilter,
+    searchQuery,
+  ]);
 
   const loadWords = async () => {
     if (!user) return;
@@ -71,13 +79,9 @@ export function Words() {
       filtered = filtered.filter((word) => {
         const wordText = word.word.toLowerCase();
         const translationText = word.translation.toLowerCase();
-        const exampleText = word.example ? word.example.toLowerCase() : "";
-        
-        return (
-          wordText.includes(query) ||
-          translationText.includes(query) ||
-          exampleText.includes(query)
-        );
+        // Note: example field removed, using examples subcollection instead
+
+        return wordText.includes(query) || translationText.includes(query);
       });
     }
 
@@ -97,17 +101,10 @@ export function Words() {
     }
 
     if (hasExamplesFilter !== null) {
-      // This will be updated when we implement the examples check
-      // For now, we'll filter based on the original example field
-      if (hasExamplesFilter) {
-        filtered = filtered.filter(
-          (word) => word.example && word.example.trim() !== ""
-        );
-      } else {
-        filtered = filtered.filter(
-          (word) => !word.example || word.example.trim() === ""
-        );
-      }
+      // Note: This filter is not fully implemented yet as it would require
+      // checking the examples subcollection for each word, which is expensive.
+      // For now, we'll skip this filter or implement it with a different approach.
+      // TODO: Implement efficient examples filter
     }
 
     setFilteredWords(filtered);
@@ -173,13 +170,11 @@ export function Words() {
             <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg">
               <span className="text-lg font-bold">{words.length}</span>
               <span className="text-sm ml-1 opacity-90">
-                {words.length === 1 ? 'word' : 'words'}
+                {words.length === 1 ? "word" : "words"}
               </span>
             </div>
           </div>
-          <p className="text-gray-600">
-            Manage your vocabulary collection
-          </p>
+          <p className="text-gray-600">Manage your vocabulary collection</p>
         </div>
         <Link
           to="/words/add"
@@ -212,12 +207,22 @@ export function Words() {
             </button>
           )}
         </div>
-        {(searchQuery || difficultyFilter !== "all" || showFailedOnly || typeFilter !== "all" || hasExamplesFilter !== null) && (
+        {(searchQuery ||
+          difficultyFilter !== "all" ||
+          showFailedOnly ||
+          typeFilter !== "all" ||
+          hasExamplesFilter !== null) && (
           <div className="mt-3 text-sm text-blue-600 font-medium">
             {searchQuery ? (
-              <>Found {filteredWords.length} word{filteredWords.length !== 1 ? 's' : ''} matching "{searchQuery}"</>
+              <>
+                Found {filteredWords.length} word
+                {filteredWords.length !== 1 ? "s" : ""} matching "{searchQuery}"
+              </>
             ) : (
-              <>Showing {filteredWords.length} of {words.length} word{words.length !== 1 ? 's' : ''}</>
+              <>
+                Showing {filteredWords.length} of {words.length} word
+                {words.length !== 1 ? "s" : ""}
+              </>
             )}
           </div>
         )}
@@ -427,12 +432,6 @@ export function Words() {
                       )}
                     </div>
                   </div>
-
-                  {word.example && (
-                    <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                      <p className="text-gray-700 italic">"{word.example}"</p>
-                    </div>
-                  )}
 
                   <div className="flex flex-wrap items-center gap-4 text-sm mb-4">
                     <div className="flex items-center space-x-2">

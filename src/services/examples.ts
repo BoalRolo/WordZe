@@ -20,8 +20,8 @@ export class ExamplesService {
     translation?: string
   ): Promise<string> {
     const exampleData = {
-      sentence: sentence.trim(),
-      translation: translation?.trim() || undefined,
+      sentence: sentence.toLowerCase().trim(),
+      translation: translation?.toLowerCase().trim() || undefined,
       createdAt: serverTimestamp(),
     };
 
@@ -94,8 +94,8 @@ export class ExamplesService {
     );
 
     const updateData = {
-      sentence: sentence.trim(),
-      translation: translation?.trim() || undefined,
+      sentence: sentence.toLowerCase().trim(),
+      translation: translation?.toLowerCase().trim() || undefined,
     };
 
     // Remove undefined values before saving

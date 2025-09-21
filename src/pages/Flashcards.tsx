@@ -6,6 +6,7 @@ import { TrackingService } from "@/services/tracking";
 import { DifficultyService } from "@/services/difficulty";
 import { ExamplesService } from "@/services/examples";
 import { WordDoc, Difficulty, ExampleSentence } from "@/types/models";
+import { capitalizeWord, capitalizeSentence } from "@/utils/formatting";
 import {
   RotateCcw,
   Check,
@@ -107,7 +108,7 @@ export function Flashcards() {
   };
 
   const loadExamples = async (wordId: string) => {
-    if (!user) return;
+    if (!user || loadingExamples) return;
 
     setLoadingExamples(true);
     try {
@@ -145,9 +146,11 @@ export function Flashcards() {
     setIsFlipping(true);
     setShowTranslation(true);
 
-    // Load examples after the flip animation is complete
+    // Load examples immediately when flipping
+    loadExamples(words[currentIndex].id);
+
+    // Complete flip animation
     setTimeout(() => {
-      loadExamples(words[currentIndex].id);
       setIsFlipping(false);
     }, 600); // Full flip animation duration
   };
@@ -155,6 +158,12 @@ export function Flashcards() {
   // Swipe gesture handlers
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     if (!showTranslation) return; // Only allow swipe when translation is shown
+
+    // Check if the target is a button - if so, don't start drag
+    const target = e.target as HTMLElement;
+    if (target.closest("button")) {
+      return;
+    }
 
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
     const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
@@ -251,6 +260,9 @@ export function Flashcards() {
       // Reset drag states
       setIsDragging(false);
       setDragOffset(0);
+      // Reset examples state
+      setCurrentExamples([]);
+      setCurrentExampleIndex(0);
     } else {
       // Session completed
       finishSession(isCorrect);
@@ -482,7 +494,7 @@ export function Flashcards() {
                 : `rotateY(0deg) translateX(${dragOffset}px) rotateZ(${
                     dragOffset * 0.05
                   }deg)`,
-              opacity: isDragging ? 0.95 : 1,
+              opacity: 1,
               filter: isDragging
                 ? (() => {
                     const offset = dragCurrent.x - dragStart.x;
@@ -504,10 +516,11 @@ export function Flashcards() {
           >
             {/* Front of card (word) */}
             <div
-              className="absolute inset-0 w-full h-full backface-hidden"
+              className="absolute inset-0 w-full h-full"
               style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
+                opacity: showTranslation ? 0 : 1,
+                zIndex: showTranslation ? 0 : 10,
+                pointerEvents: showTranslation ? "none" : "auto",
               }}
             >
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col">
@@ -539,7 +552,7 @@ export function Flashcards() {
                 <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
                   <div className="mb-6">
                     <h2 className="text-5xl font-bold text-gray-900 mb-4">
-                      {currentWord.word}
+                      {capitalizeWord(currentWord.word)}
                     </h2>
                     {currentWord.type && (
                       <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200">
@@ -563,11 +576,14 @@ export function Flashcards() {
 
             {/* Back of card (translation) */}
             <div
-              className="absolute inset-0 w-full h-full backface-hidden rotate-y-180"
+              className="absolute inset-0 w-full h-full"
               style={{
-                backfaceVisibility: "hidden",
-                WebkitBackfaceVisibility: "hidden",
-                transform: "rotateY(180deg)",
+                opacity: showTranslation ? 1 : 0,
+                zIndex: showTranslation ? 10 : 0,
+                pointerEvents: showTranslation ? "auto" : "none",
+                transform: showTranslation
+                  ? "rotateY(180deg)"
+                  : "rotateY(0deg)",
               }}
             >
               <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col overflow-hidden">
@@ -599,10 +615,10 @@ export function Flashcards() {
                 <div className="flex-1 flex flex-col text-center space-y-4 overflow-y-auto">
                   <div className="flex-shrink-0">
                     <h2 className="text-4xl font-bold text-gray-900 mb-4">
-                      {currentWord.translation}
+                      {capitalizeWord(currentWord.translation)}
                     </h2>
                     <div className="text-lg text-gray-600 italic">
-                      Translation of "{currentWord.word}"
+                      Translation of "{capitalizeWord(currentWord.word)}"
                     </div>
                   </div>
 
@@ -629,13 +645,21 @@ export function Flashcards() {
                       ) : (
                         <div className="space-y-3">
                           <div className="text-base text-gray-800 font-medium bg-blue-50 p-3 rounded-lg">
-                            "{currentExamples[currentExampleIndex]?.sentence}"
+                            "
+                            {capitalizeSentence(
+                              currentExamples[currentExampleIndex]?.sentence ||
+                                ""
+                            )}
+                            "
                           </div>
                           {currentExamples[currentExampleIndex]
                             ?.translation && (
                             <div className="text-gray-600 italic bg-gray-50 p-3 rounded-lg">
                               "
-                              {currentExamples[currentExampleIndex].translation}
+                              {capitalizeSentence(
+                                currentExamples[currentExampleIndex]
+                                  .translation || ""
+                              )}
                               "
                             </div>
                           )}
@@ -664,7 +688,10 @@ export function Flashcards() {
                   )}
 
                   {/* Action buttons */}
-                  <div className="flex justify-center space-x-4 pt-2 flex-shrink-0">
+                  <div
+                    className="flex justify-center space-x-4 pt-2 flex-shrink-0"
+                    style={{ pointerEvents: isDragging ? "none" : "auto" }}
+                  >
                     <button
                       onClick={() => {
                         console.log("No button clicked");

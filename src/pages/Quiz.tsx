@@ -430,7 +430,7 @@ export function Quiz() {
       <div className="bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            {currentItem.word}
+            {formatWordForDisplay(currentItem.word)}
           </h2>
           <p className="text-lg text-gray-600">
             What is the correct translation?
@@ -468,7 +468,7 @@ export function Quiz() {
                 className={buttonClass}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">{option}</span>
+                  <span className="text-lg">{formatTranslationForDisplay(option)}</span>
                   {showResult && isCorrect && (
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   )}

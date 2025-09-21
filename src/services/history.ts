@@ -169,7 +169,6 @@ export class HistoryService {
       failCount: number;
       lastFailed: string;
       examples?: Array<{ sentence: string; translation?: string }>;
-      example?: string;
       type?: string;
     }>
   > {
@@ -262,7 +261,6 @@ export class HistoryService {
           failCount: data.count,
           lastFailed: data.lastFailed.toLocaleDateString(),
           examples: examples,
-          example: word?.example || "",
           type: word?.type || "unknown",
         };
       })
