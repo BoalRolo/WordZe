@@ -151,13 +151,15 @@ export function WordImporter() {
           );
 
           // Adicionar exemplos
-          for (const example of wordData.examples) {
-            await ExamplesService.addExample(
-              user.uid,
-              wordId,
-              example.sentence,
-              example.translation
-            );
+          if (wordData.examples && Array.isArray(wordData.examples)) {
+            for (const example of wordData.examples) {
+              await ExamplesService.addExample(
+                user.uid,
+                wordId,
+                example.sentence,
+                example.translation
+              );
+            }
           }
 
           importResult.imported++;
