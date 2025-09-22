@@ -479,11 +479,10 @@ export function Flashcards() {
           <div
             className={`relative w-full h-full transition-transform duration-600 transform-style-preserve-3d ${
               showTranslation ? "rotate-y-180" : ""
-            } ${isFlipping ? "animate-pulse" : ""} ${
-              isDragging ? "cursor-grabbing" : "cursor-grab"
-            }`}
+            } ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
             style={{
               transformStyle: "preserve-3d",
+              willChange: "transform, opacity",
               transition: isDragging
                 ? "none"
                 : "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -495,16 +494,7 @@ export function Flashcards() {
                     dragOffset * 0.05
                   }deg)`,
               opacity: 1,
-              filter: isDragging
-                ? (() => {
-                    const offset = dragCurrent.x - dragStart.x;
-                    return offset > 15
-                      ? "hue-rotate(-60deg) saturate(1.2)" // Red tint for right swipe (YES)
-                      : offset < -15
-                      ? "hue-rotate(120deg) saturate(1.2)" // Green tint for left swipe (NO)
-                      : "none";
-                  })()
-                : "none",
+              filter: "none",
             }}
             onMouseDown={handleMouseDown}
             onMouseMove={handleMouseMove}
@@ -514,10 +504,37 @@ export function Flashcards() {
             onTouchMove={handleDragMove}
             onTouchEnd={handleDragEnd}
           >
+            {/* Drag tint overlay (does not affect buttons) */}
+            {(() => {
+              if (!isDragging) return null;
+              const offset = dragCurrent.x - dragStart.x;
+              const threshold = 30; // show tint only after meaningful movement
+              if (offset > threshold) {
+                return (
+                  <div
+                    className="absolute inset-0 rounded-3xl pointer-events-none bg-green-500/10"
+                    style={{ zIndex: 15 }}
+                  />
+                );
+              }
+              if (offset < -threshold) {
+                return (
+                  <div
+                    className="absolute inset-0 rounded-3xl pointer-events-none bg-red-500/10"
+                    style={{ zIndex: 15 }}
+                  />
+                );
+              }
+              return null;
+            })()}
             {/* Front of card (word) */}
             <div
               className="absolute inset-0 w-full h-full"
               style={{
+                willChange: "opacity, transform",
+                contain: "layout paint",
+                transform: "translateZ(0)",
+                transition: "opacity 160ms ease",
                 opacity: showTranslation ? 0 : 1,
                 zIndex: showTranslation ? 0 : 10,
                 pointerEvents: showTranslation ? "none" : "auto",
@@ -578,15 +595,18 @@ export function Flashcards() {
             <div
               className="absolute inset-0 w-full h-full"
               style={{
+                willChange: "opacity, transform",
+                contain: "layout paint",
+                transform: `${
+                  showTranslation ? "rotateY(180deg)" : "rotateY(0deg)"
+                } translateZ(0)`,
+                transition: "opacity 160ms ease",
                 opacity: showTranslation ? 1 : 0,
                 zIndex: showTranslation ? 10 : 0,
                 pointerEvents: showTranslation ? "auto" : "none",
-                transform: showTranslation
-                  ? "rotateY(180deg)"
-                  : "rotateY(0deg)",
               }}
             >
-              <div className="bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col overflow-hidden">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col overflow-hidden">
                 {/* Progress info at top */}
                 <div className="flex items-center justify-between mb-6 flex-shrink-0">
                   <div className="flex items-center space-x-4">
@@ -605,7 +625,7 @@ export function Flashcards() {
                   </div>
                   <div className="w-24 bg-gray-200 rounded-full h-2">
                     <div
-                      className="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full transition-all duration-500 ease-out"
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
