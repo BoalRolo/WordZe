@@ -508,7 +508,7 @@ export function Flashcards() {
             {(() => {
               if (!isDragging) return null;
               const offset = dragCurrent.x - dragStart.x;
-              const threshold = 30; // show tint only after meaningful movement
+              const threshold = 12; // lower threshold for earlier tint feedback
               if (offset > threshold) {
                 return (
                   <div
