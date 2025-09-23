@@ -62,13 +62,6 @@ export function Profile() {
 
   useEffect(() => {
     if (user) {
-      console.log("Profile page - User data:", {
-        displayName: user.displayName,
-        email: user.email,
-        photoURL: user.photoURL,
-        userProfile: userProfile,
-        currentPhotoURL: currentPhotoURL,
-      });
       setDisplayName(user.displayName || userProfile?.name || "");
       setEmail(user.email || "");
       setPhotoURL(currentPhotoURL || "");
@@ -104,7 +97,6 @@ export function Profile() {
           user.uid,
           file
         );
-        console.log("Successfully uploaded to Firebase Storage:", downloadURL);
         return downloadURL;
       } catch (error) {
         console.warn(
@@ -128,7 +120,6 @@ export function Profile() {
       }
     } else {
       // Use base64 encoding (no CORS issues)
-      console.log("Using base64 encoding for photo upload");
 
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -167,16 +158,13 @@ export function Profile() {
         // Handle old photo deletion based on configuration
         if (oldPhotoURL && oldPhotoURL !== newPhotoURL) {
           if (oldPhotoURL.startsWith("data:")) {
-            console.log("Old photo was base64, no need to delete from storage");
+            // Old photo was base64, no need to delete from storage
           } else if (
             oldPhotoURL.startsWith("https://firebasestorage.googleapis.com") &&
             USE_FIREBASE_STORAGE
           ) {
             try {
               await StorageService.deleteProfilePhoto(oldPhotoURL);
-              console.log(
-                "Successfully deleted old photo from Firebase Storage"
-              );
             } catch (error) {
               console.warn(
                 "Failed to delete old photo from Firebase Storage:",
@@ -187,20 +175,12 @@ export function Profile() {
             oldPhotoURL.startsWith("https://firebasestorage.googleapis.com") &&
             !USE_FIREBASE_STORAGE
           ) {
-            console.log(
-              "Old photo was from Firebase Storage, but skipping deletion (Firebase Storage disabled)"
-            );
+            // Old photo was from Firebase Storage, but skipping deletion (Firebase Storage disabled)
           }
         }
       }
 
       // Update Firebase Auth profile (only displayName, not photoURL for base64)
-      console.log("Updating Firebase Auth profile:", {
-        displayName: displayName.trim(),
-        photoURL:
-          newPhotoURL.length > 1000 ? "stored_in_firestore" : newPhotoURL, // Avoid long base64 URLs
-      });
-
       // Only update photoURL in Firebase Auth if it's a short URL (Firebase Storage URL)
       const authUpdateData: any = {
         displayName: displayName.trim(),
@@ -216,12 +196,6 @@ export function Profile() {
       }
 
       await updateProfile(user, authUpdateData);
-
-      // Update Firestore user document
-      console.log("Updating Firestore user document:", {
-        name: displayName.trim(),
-        photoURL: newPhotoURL,
-      });
 
       // Use the utility function to ensure document exists and update it
       await updateUserDocument(user, {

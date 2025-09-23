@@ -359,38 +359,39 @@ export function Quiz() {
   const progress = ((currentIndex + 1) / quizItems.length) * 100;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mb-4 sm:mb-6">
+        <div className="flex items-center justify-between mb-3 sm:mb-4 flex-wrap gap-2">
           <button
             onClick={() => navigate("/dashboard")}
-            className="inline-flex items-center text-gray-600 hover:text-gray-900"
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 text-sm sm:text-base"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            <ArrowLeft className="w-4 h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Back</span>
           </button>
           <button
             onClick={resetQuiz}
-            className="inline-flex items-center text-gray-600 hover:text-gray-900"
+            className="inline-flex items-center text-gray-600 hover:text-gray-900 text-sm sm:text-base"
           >
-            <RotateCcw className="w-4 h-4 mr-2" />
+            <RotateCcw className="w-4 h-4 mr-1 sm:mr-2" />
             Reset
           </button>
         </div>
 
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+        <div className="flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-2">
           <span>
             Question {currentIndex + 1} of {quizItems.length}
           </span>
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <span>
               Score: {sessionStats.correct}/{sessionStats.total}
             </span>
             {timeLeft !== null && (
-              <div className="flex items-center space-x-2">
-                <Clock className="h-4 w-4" />
+              <div className="flex items-center space-x-1 sm:space-x-2">
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span
-                  className={`font-bold ${
+                  className={`font-bold text-xs sm:text-sm ${
                     timeLeft <= 10 ? "text-red-600" : "text-gray-600"
                   }`}
                 >
@@ -403,9 +404,9 @@ export function Quiz() {
 
         {/* Timer Display */}
         {timeLeft !== null && !showResult && (
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center mb-3 sm:mb-4">
             <div
-              className={`px-4 py-2 rounded-full font-bold text-lg ${
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-bold text-sm sm:text-lg ${
                 timeLeft <= 10
                   ? "bg-red-500 text-white animate-pulse"
                   : timeLeft <= 20
@@ -413,26 +414,26 @@ export function Quiz() {
                   : "bg-blue-500 text-white"
               }`}
             >
-              <Clock className="h-5 w-5 inline mr-2" />
+              <Clock className="h-4 w-4 sm:h-5 sm:w-5 inline mr-1 sm:mr-2" />
               {timeLeft}s
             </div>
           </div>
         )}
 
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-gray-200 rounded-full h-1.5 sm:h-2">
           <div
-            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            className="bg-blue-600 h-1.5 sm:h-2 rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+      <div className="bg-white rounded-lg shadow-lg p-4 sm:p-6 lg:p-8">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3 sm:mb-4">
             {formatWordForDisplay(currentItem.word)}
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-base sm:text-lg text-gray-600">
             What is the correct translation?
           </p>
         </div>
@@ -444,7 +445,7 @@ export function Quiz() {
             const isWrong = isSelected && !isCorrect;
 
             let buttonClass =
-              "w-full text-left px-4 py-3 rounded-lg border-2 transition-all duration-200 ";
+              "w-full text-left px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg border-2 transition-all duration-200 ";
 
             if (showResult) {
               if (isCorrect) {
@@ -468,14 +469,14 @@ export function Quiz() {
                 className={buttonClass}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">
+                  <span className="text-base sm:text-lg">
                     {formatTranslationForDisplay(option)}
                   </span>
                   {showResult && isCorrect && (
-                    <CheckCircle className="w-5 h-5 text-green-600" />
+                    <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                   )}
                   {showResult && isWrong && (
-                    <XCircle className="w-5 h-5 text-red-600" />
+                    <XCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-600" />
                   )}
                 </div>
               </button>
@@ -484,14 +485,14 @@ export function Quiz() {
         </div>
 
         {showResult && (
-          <div className="mt-8 space-y-6">
+          <div className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
             <div className="text-center">
               {selectedAnswer === currentItem.correctAnswer ? (
-                <div className="text-green-600 text-lg font-medium">
+                <div className="text-green-600 text-base sm:text-lg font-medium">
                   ✓ Correct! Well done!
                 </div>
               ) : (
-                <div className="text-red-600 text-lg font-medium">
+                <div className="text-red-600 text-base sm:text-lg font-medium">
                   ✗ Incorrect. The correct answer is:{" "}
                   {currentItem.correctAnswer}
                 </div>
@@ -500,30 +501,30 @@ export function Quiz() {
 
             {/* Example sentences with pagination */}
             {currentExamples.length > 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-                    <BookOpen className="h-5 w-5 mr-2 text-blue-500" />
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 sm:p-4">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+                    <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 text-blue-500" />
                     Example Sentences
                   </h3>
                   {currentExamples.length > 1 && (
-                    <span className="text-sm text-gray-500">
+                    <span className="text-xs sm:text-sm text-gray-500">
                       {currentExampleIndex + 1} of {currentExamples.length}
                     </span>
                   )}
                 </div>
 
                 {loadingExamples ? (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+                  <div className="flex items-center justify-center py-3 sm:py-4">
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-6 sm:w-6 border-b-2 border-blue-500"></div>
                   </div>
                 ) : (
-                  <div className="space-y-3">
-                    <div className="text-lg text-gray-800 font-medium">
+                  <div className="space-y-2 sm:space-y-3">
+                    <div className="text-base sm:text-lg text-gray-800 font-medium">
                       "{currentExamples[currentExampleIndex]?.sentence}"
                     </div>
                     {currentExamples[currentExampleIndex]?.translation && (
-                      <div className="text-gray-600 italic">
+                      <div className="text-sm sm:text-base text-gray-600 italic">
                         "{currentExamples[currentExampleIndex].translation}"
                       </div>
                     )}
@@ -554,7 +555,7 @@ export function Quiz() {
             <div className="text-center">
               <button
                 onClick={nextQuestion}
-                className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-200"
+                className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 border border-transparent text-sm sm:text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transform hover:scale-105 transition-all duration-200"
               >
                 {currentIndex + 1 < quizItems.length
                   ? "Next Question"

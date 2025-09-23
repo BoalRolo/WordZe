@@ -71,15 +71,12 @@ export function History() {
   };
 
   const toggleExpanded = (wordId: string) => {
-    console.log("Toggle expanded for wordId:", wordId);
     setExpandedWords((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(wordId)) {
         newSet.delete(wordId);
-        console.log("Collapsed word:", wordId);
       } else {
         newSet.add(wordId);
-        console.log("Expanded word:", wordId);
       }
       return newSet;
     });
@@ -166,58 +163,58 @@ export function History() {
     activeTab === "all" ? history : activeTab === "today" ? todayHistory : [];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
           Quiz History
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-base sm:text-lg text-gray-600 px-4">
           Track your learning progress and identify areas for improvement
         </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
+      <div className="grid grid-cols-2 gap-3 sm:gap-6 lg:grid-cols-4">
+        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 sm:p-6 border border-blue-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-blue-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-blue-600 mb-1">
                 Total Sessions
               </p>
-              <p className="text-3xl font-bold text-blue-900">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-900">
                 {history.length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-              <BarChart3 className="h-6 w-6 text-white" />
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500 rounded-xl flex items-center justify-center">
+              <BarChart3 className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
+        <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-4 sm:p-6 border border-green-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-green-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-green-600 mb-1">
                 Today's Sessions
               </p>
-              <p className="text-3xl font-bold text-green-900">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-900">
                 {todayHistory.length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-              <Calendar className="h-6 w-6 text-white" />
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-500 rounded-xl flex items-center justify-center">
+              <Calendar className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-6 border border-purple-200">
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-4 sm:p-6 border border-purple-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-purple-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-purple-600 mb-1">
                 Avg Score
               </p>
-              <p className="text-3xl font-bold text-purple-900">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-purple-900">
                 {history.length > 0
                   ? Math.round(
                       history.reduce(
@@ -229,24 +226,24 @@ export function History() {
                 %
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-500 rounded-xl flex items-center justify-center">
-              <Target className="h-6 w-6 text-white" />
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500 rounded-xl flex items-center justify-center">
+              <Target className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-6 border border-red-200">
+        <div className="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-4 sm:p-6 border border-red-200">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-red-600 mb-1">
+              <p className="text-xs sm:text-sm font-medium text-red-600 mb-1">
                 Failed Words
               </p>
-              <p className="text-3xl font-bold text-red-900">
+              <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-900">
                 {failedWords.length}
               </p>
             </div>
-            <div className="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center">
-              <AlertCircle className="h-6 w-6 text-white" />
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-red-500 rounded-xl flex items-center justify-center">
+              <AlertCircle className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
             </div>
           </div>
         </div>
@@ -256,17 +253,18 @@ export function History() {
       <div className="flex space-x-1 bg-gray-100 rounded-xl p-1">
         <button
           onClick={() => setActiveTab("all")}
-          className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
             activeTab === "all"
               ? "bg-white text-blue-600 shadow-sm"
               : "text-gray-600 hover:text-gray-900"
           }`}
         >
-          All History
+          <span className="hidden sm:inline">All History</span>
+          <span className="sm:hidden">All</span>
         </button>
         <button
           onClick={() => setActiveTab("today")}
-          className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
             activeTab === "today"
               ? "bg-white text-blue-600 shadow-sm"
               : "text-gray-600 hover:text-gray-900"
@@ -276,41 +274,35 @@ export function History() {
         </button>
         <button
           onClick={() => setActiveTab("failed")}
-          className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all duration-200 ${
+          className={`flex-1 py-2 px-2 sm:px-4 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
             activeTab === "failed"
               ? "bg-white text-blue-600 shadow-sm"
               : "text-gray-600 hover:text-gray-900"
           }`}
         >
-          Failed Words
+          <span className="hidden sm:inline">Failed Words</span>
+          <span className="sm:hidden">Failed</span>
         </button>
       </div>
 
       {/* Content */}
       {activeTab === "failed" ? (
         <div className="space-y-4">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-4">
             <div>
-              <div className="flex items-center space-x-3 mb-2">
-                <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">⚡</span>
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-bold text-sm sm:text-lg">
+                    ⚡
+                  </span>
                 </div>
-                <h2 className="text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                   Top 10 Failed Words
                 </h2>
               </div>
-              <p className="text-gray-600 text-lg">
-                Your most challenging words from the last 7 days, ranked by
-                frequency
+              <p className="text-gray-600 text-sm sm:text-base lg:text-lg">
+                Your most challenging words of all time, ranked by frequency
               </p>
-            </div>
-            <div className="relative">
-              <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-3 rounded-2xl font-bold text-lg shadow-lg">
-                {failedWords.length} Words
-              </div>
-              <div className="absolute -top-1 -right-1 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-gray-800">🔥</span>
-              </div>
             </div>
           </div>
           {failedWords.length === 0 ? (
@@ -326,56 +318,49 @@ export function History() {
               </p>
             </div>
           ) : (
-            <div className="grid gap-4">
+            <div className="grid gap-3 sm:gap-4">
               {failedWords.map((item, index) => {
                 const isExpanded = expandedWords.has(item.wordId);
                 const hasExamples = item.examples && item.examples.length > 0;
 
-                // Debug log
-                console.log(
-                  `Word: ${item.word}, hasExamples: ${hasExamples}, examples:`,
-                  item.examples,
-                  `wordId: ${item.wordId}`
-                );
-
                 return (
                   <div
                     key={item.wordId}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-6"
+                    className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-4 sm:p-6"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center space-x-4 mb-3">
+                        <div className="flex items-center space-x-2 sm:space-x-4 mb-2 sm:mb-3">
                           <span
-                            className={`text-2xl font-bold px-3 py-1 rounded-full ${getRankingColor(
+                            className={`text-lg sm:text-2xl font-bold px-2 sm:px-3 py-1 rounded-full ${getRankingColor(
                               index
                             )}`}
                           >
                             #{index + 1}
                           </span>
                           <div className="flex-1">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                            <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 mb-1">
                               {capitalizeWord(item.word)}
                             </h3>
-                            <p className="text-lg text-gray-600 mb-2">
+                            <p className="text-base sm:text-lg text-gray-600 mb-2">
                               {capitalizeWord(item.translation)}
                             </p>
                             {item.type && (
-                              <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
+                              <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
                                 {item.type}
                               </span>
                             )}
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-4 text-sm mb-4">
-                          <div className="flex items-center space-x-2">
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm mb-3 sm:mb-4">
+                          <div className="flex items-center space-x-1 sm:space-x-2">
                             <span className="text-gray-500">Failed:</span>
                             <span className="font-semibold text-red-700">
                               {item.failCount} times
                             </span>
                           </div>
-                          <div className="flex items-center space-x-2">
+                          <div className="flex items-center space-x-1 sm:space-x-2">
                             <span className="text-gray-500">Last failed:</span>
                             <span className="font-semibold text-gray-900">
                               {item.lastFailed}
@@ -384,15 +369,15 @@ export function History() {
                         </div>
 
                         {/* Example Sentences Section */}
-                        <div className="border-t border-gray-200 pt-4">
+                        <div className="border-t border-gray-200 pt-3 sm:pt-4">
                           <button
                             onClick={() => toggleExpanded(item.wordId)}
-                            className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-3"
+                            className="flex items-center space-x-1 sm:space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-2 sm:mb-3 text-sm sm:text-base"
                           >
                             {isExpanded ? (
-                              <ChevronDown className="w-4 h-4" />
+                              <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
                             ) : (
-                              <ChevronRight className="w-4 h-4" />
+                              <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                             )}
                             <span>Example Sentences</span>
                           </button>

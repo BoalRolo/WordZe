@@ -257,8 +257,6 @@ export const sampleWords: SampleWord[] = [
 
 export async function addSampleWords(userId: string): Promise<void> {
   try {
-    console.log("Adding sample words...");
-    
     for (const sampleWord of sampleWords) {
       // Add the word
       const wordId =       await WordsService.addWord(
@@ -279,8 +277,6 @@ export async function addSampleWords(userId: string): Promise<void> {
         );
       }
     }
-    
-    console.log(`Successfully added ${sampleWords.length} sample words with examples!`);
   } catch (error) {
     console.error("Error adding sample words:", error);
     throw error;
@@ -289,10 +285,8 @@ export async function addSampleWords(userId: string): Promise<void> {
 
 export async function clearAllWords(userId: string): Promise<void> {
   try {
-    console.log("Clearing all words...");
     // This would require implementing a clearAllWords method in WordsService
     // For now, we'll just log the intention
-    console.log("Clear all words functionality would be implemented here");
   } catch (error) {
     console.error("Error clearing words:", error);
     throw error;

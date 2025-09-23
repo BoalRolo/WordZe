@@ -19,7 +19,6 @@ export async function ensureUserDocument(user: User): Promise<UserDoc> {
     }
     
     // User document doesn't exist, create it
-    console.log('Creating user document for:', user.uid)
     
     const newUserDoc = cleanFirestoreData({
       name: user.displayName || user.email || 'User',
@@ -55,7 +54,6 @@ export async function updateUserDocument(
   } catch (error: any) {
     // If document doesn't exist, create it
     if (error.code === 'not-found') {
-      console.log('User document not found, creating it...')
       await ensureUserDocument(user)
       
       // Try to update again

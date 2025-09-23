@@ -61,7 +61,6 @@ export function Words() {
 
     try {
       const wordsData = await WordsService.getWords(user.uid);
-      console.log("Loaded words:", wordsData.length, wordsData);
       setWords(wordsData);
     } catch (error) {
       console.error("Error loading words:", error);
@@ -160,50 +159,54 @@ export function Words() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <div className="flex items-center gap-4 mb-2">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="flex items-center gap-2 sm:gap-4 mb-2 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               Words
             </h1>
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-full shadow-lg">
-              <span className="text-lg font-bold">{words.length}</span>
-              <span className="text-sm ml-1 opacity-90">
+            <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-lg">
+              <span className="text-base sm:text-lg font-bold">
+                {words.length}
+              </span>
+              <span className="text-xs sm:text-sm ml-1 opacity-90">
                 {words.length === 1 ? "word" : "words"}
               </span>
             </div>
           </div>
-          <p className="text-gray-600">Manage your vocabulary collection</p>
+          <p className="text-sm sm:text-base text-gray-600">
+            Manage your vocabulary collection
+          </p>
         </div>
         <Link
           to="/words/add"
-          className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+          className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
           Add Word
         </Link>
       </div>
 
       {/* Search Bar */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-2xl shadow-lg border border-blue-200">
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl shadow-lg border border-blue-200">
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-            <Search className="h-5 w-5 text-blue-500" />
+          <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
           </div>
           <input
             type="text"
             placeholder="Search words, translations, or examples..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-12 pr-4 py-4 text-lg border-2 border-blue-200 rounded-xl bg-white shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300 transition-all duration-200 placeholder-gray-400"
+            className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 text-base sm:text-lg border-2 border-blue-200 rounded-xl bg-white shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300 transition-all duration-200 placeholder-gray-400"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
+              className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
             >
-              <span className="text-2xl">&times;</span>
+              <span className="text-xl sm:text-2xl">&times;</span>
             </button>
           )}
         </div>
@@ -212,7 +215,7 @@ export function Words() {
           showFailedOnly ||
           typeFilter !== "all" ||
           hasExamplesFilter !== null) && (
-          <div className="mt-3 text-sm text-blue-600 font-medium">
+          <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-blue-600 font-medium">
             {searchQuery ? (
               <>
                 Found {filteredWords.length} word
@@ -229,17 +232,17 @@ export function Words() {
       </div>
 
       {/* Enhanced Filters */}
-      <div className="bg-gradient-to-r from-white to-gray-50 p-6 rounded-2xl shadow-lg border border-gray-200">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="bg-gradient-to-r from-white to-gray-50 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {/* Difficulty Filter */}
           <div className="flex items-center space-x-3">
-            <Filter className="w-5 h-5 text-blue-500" />
+            <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
             <select
               value={difficultyFilter}
               onChange={(e) =>
                 setDifficultyFilter(e.target.value as Difficulty | "all")
               }
-              className="border-2 border-gradient-to-r from-blue-300 to-purple-300 rounded-xl px-4 py-2 text-sm font-medium bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:from-blue-100 hover:to-purple-100 transition-all duration-200"
+              className="flex-1 border-2 border-gradient-to-r from-blue-300 to-purple-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:from-blue-100 hover:to-purple-100 transition-all duration-200"
               style={{
                 background: "linear-gradient(135deg, #dbeafe 0%, #f3e8ff 100%)",
                 border: "2px solid transparent",
@@ -264,11 +267,11 @@ export function Words() {
 
           {/* Type Filter */}
           <div className="flex items-center space-x-3">
-            <BookOpen className="w-5 h-5 text-green-500" />
+            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="border-2 border-gradient-to-r from-green-300 to-blue-300 rounded-xl px-4 py-2 text-sm font-medium bg-gradient-to-r from-green-50 to-blue-50 shadow-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:from-green-100 hover:to-blue-100 transition-all duration-200"
+              className="flex-1 border-2 border-gradient-to-r from-green-300 to-blue-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-green-50 to-blue-50 shadow-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:from-green-100 hover:to-blue-100 transition-all duration-200"
               style={{
                 background: "linear-gradient(135deg, #dcfce7 0%, #dbeafe 100%)",
                 border: "2px solid transparent",
@@ -299,7 +302,7 @@ export function Words() {
 
           {/* Examples Filter */}
           <div className="flex items-center space-x-3">
-            <BookOpen className="w-5 h-5 text-purple-500" />
+            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
             <select
               value={
                 hasExamplesFilter === null
@@ -315,7 +318,7 @@ export function Words() {
                   setHasExamplesFilter(e.target.value === "yes");
                 }
               }}
-              className="border-2 border-gradient-to-r from-purple-300 to-pink-300 rounded-xl px-4 py-2 text-sm font-medium bg-gradient-to-r from-purple-50 to-pink-50 shadow-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 hover:from-purple-100 hover:to-pink-100 transition-all duration-200"
+              className="flex-1 border-2 border-gradient-to-r from-purple-300 to-pink-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-purple-50 to-pink-50 shadow-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 hover:from-purple-100 hover:to-pink-100 transition-all duration-200"
               style={{
                 background: "linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%)",
                 border: "2px solid transparent",
@@ -351,40 +354,40 @@ export function Words() {
       </div>
 
       {filteredWords.length === 0 ? (
-        <div className="text-center py-16">
+        <div className="text-center py-12 sm:py-16">
           {words.length === 0 ? (
             <>
-              <div className="mx-auto w-24 h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
-                <BookOpen className="h-12 w-12 text-blue-500" />
+              <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <BookOpen className="h-10 w-10 sm:h-12 sm:w-12 text-blue-500" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 No words yet
               </h3>
-              <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto px-4">
                 Start building your vocabulary by adding your first word. Every
                 journey begins with a single step!
               </p>
               <Link
                 to="/words/add"
-                className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
               >
-                <Plus className="w-5 h-5 mr-2" />
+                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                 Add your first word
               </Link>
             </>
           ) : (
             <>
-              <div className="mx-auto w-24 h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-6">
-                <Filter className="h-12 w-12 text-gray-500" />
+              <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 sm:mb-6">
+                <Filter className="h-10 w-10 sm:h-12 sm:w-12 text-gray-500" />
               </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
                 No words match your filters
               </h3>
-              <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
+              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto px-4">
                 Try adjusting your filter criteria to see more words, or add new
                 words to your collection.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
                 <button
                   onClick={() => {
                     setDifficultyFilter("all");
@@ -393,15 +396,15 @@ export function Words() {
                     setHasExamplesFilter(null);
                     setSearchQuery("");
                   }}
-                  className="inline-flex items-center px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-200"
+                  className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-200 text-sm sm:text-base"
                 >
                   Clear filters
                 </button>
                 <Link
                   to="/words/add"
-                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
+                  className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
                 >
-                  <Plus className="w-5 h-5 mr-2" />
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                   Add new word
                 </Link>
               </div>
@@ -409,51 +412,51 @@ export function Words() {
           )}
         </div>
       ) : (
-        <div className="grid gap-6">
+        <div className="grid gap-4 sm:gap-6">
           {filteredWords.map((word) => (
             <div
               key={word.id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-6"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-4 sm:p-6"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-4 mb-3">
+                  <div className="flex items-center space-x-2 sm:space-x-4 mb-2 sm:mb-3">
                     <div className="flex-1">
-                      <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
                         {formatWordForDisplay(word.word)}
                       </h3>
-                      <p className="text-lg text-gray-600 mb-2">
+                      <p className="text-base sm:text-lg text-gray-600 mb-2">
                         {formatTranslationForDisplay(word.translation)}
                       </p>
                       {word.type && (
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
+                        <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
                           {word.type}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4 text-sm mb-4">
-                    <div className="flex items-center space-x-2">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm mb-3 sm:mb-4">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
                       <span className="text-gray-500">Attempts:</span>
                       <span className="font-semibold text-gray-900">
                         {word.attempts}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
                       <span className="text-green-600">Success:</span>
                       <span className="font-semibold text-green-700">
                         {word.successes}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1 sm:space-x-2">
                       <span className="text-red-600">Fails:</span>
                       <span className="font-semibold text-red-700">
                         {word.fails}
                       </span>
                     </div>
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getDifficultyColor(
+                      className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getDifficultyColor(
                         word
                       )}`}
                     >
@@ -462,15 +465,15 @@ export function Words() {
                   </div>
 
                   {/* Example Sentences Section */}
-                  <div className="border-t border-gray-200 pt-4">
+                  <div className="border-t border-gray-200 pt-3 sm:pt-4">
                     <button
                       onClick={() => toggleWordExpansion(word.id)}
-                      className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-3"
+                      className="flex items-center space-x-1 sm:space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-2 sm:mb-3 text-sm sm:text-base"
                     >
                       {expandedWords.has(word.id) ? (
-                        <ChevronDown className="w-4 h-4" />
+                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
                       ) : (
-                        <ChevronRight className="w-4 h-4" />
+                        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
                       )}
                       <span>Example Sentences</span>
                     </button>
@@ -488,20 +491,20 @@ export function Words() {
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-3 ml-4">
+                <div className="flex items-center space-x-2 sm:space-x-3 ml-2 sm:ml-4">
                   <Link
                     to={`/words/edit/${word.id}`}
-                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                    className="p-1.5 sm:p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                     title="Edit word"
                   >
-                    <Edit className="w-5 h-5" />
+                    <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
                   </Link>
                   <button
                     onClick={() => handleDelete(word.id)}
-                    className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200"
+                    className="p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200"
                     title="Delete word"
                   >
-                    <Trash2 className="w-5 h-5" />
+                    <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
                   </button>
                 </div>
               </div>

@@ -234,7 +234,6 @@ export function Flashcards() {
   };
 
   const handleAnswer = async (isCorrect: boolean) => {
-    console.log("handleAnswer called with:", isCorrect);
     if (!user || currentIndex >= words.length) return;
 
     const currentWord = words[currentIndex];
@@ -397,44 +396,46 @@ export function Flashcards() {
   const progress = ((currentIndex + 1) / words.length) * 100;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8">
+    <div className="max-w-4xl mx-auto space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Header */}
       <div className="text-center">
-        <div className="flex items-center justify-center mb-4">
-          <div className="p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl">
-            <Sparkles className="h-8 w-8 text-white" />
+        <div className="flex items-center justify-center mb-3 sm:mb-4">
+          <div className="p-2 sm:p-3 bg-gradient-to-r from-purple-500 to-blue-600 rounded-2xl">
+            <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
           </div>
         </div>
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
           Flashcards
         </h1>
-        <p className="text-lg text-gray-600">
+        <p className="text-base sm:text-lg text-gray-600 px-4">
           Study with interactive flashcards and improve your vocabulary!
         </p>
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <button
           onClick={() => navigate("/dashboard")}
-          className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+          className="flex items-center text-gray-600 hover:text-gray-800 transition-colors text-sm sm:text-base"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
+          <ArrowLeft className="h-4 w-4 mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Back to Dashboard</span>
+          <span className="sm:hidden">Back</span>
         </button>
         <button
           onClick={resetSession}
-          className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+          className="flex items-center text-gray-600 hover:text-gray-800 transition-colors text-sm sm:text-base"
         >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Reset Session
+          <RotateCcw className="h-4 w-4 mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Reset Session</span>
+          <span className="sm:hidden">Reset</span>
         </button>
       </div>
 
       {/* Swipe indicators */}
       {showTranslation && (
         <div className="flex justify-center mb-4">
-          <div className="flex items-center space-x-8 text-sm text-gray-500">
+          <div className="flex items-center space-x-4 sm:space-x-8 text-xs sm:text-sm text-gray-500">
             <div
               className={`flex items-center transition-all duration-200 ${
                 isDragging &&
@@ -468,9 +469,9 @@ export function Flashcards() {
       )}
 
       {/* Flashcard */}
-      <div className="flex justify-center">
+      <div className="flex justify-center px-2">
         <div
-          className={`relative w-full max-w-2xl h-[500px] perspective-1000 ${
+          className={`relative w-full max-w-2xl h-[400px] sm:h-[450px] lg:h-[500px] perspective-1000 ${
             sessionEnded ? "opacity-0 pointer-events-none" : ""
           }`}
         >
@@ -560,39 +561,39 @@ export function Flashcards() {
                 pointerEvents: showTranslation ? "none" : "auto",
               }}
             >
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 h-full flex flex-col">
                 {/* Progress info at top */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-between mb-4 sm:mb-6">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
                     <div className="flex items-center">
-                      <Target className="h-4 w-4 text-blue-600 mr-2" />
-                      <span className="text-sm font-medium text-gray-700">
-                        {currentIndex + 1} of {words.length}
+                      <Target className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600 mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        {currentIndex + 1}/{words.length}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <TrendingUp className="h-4 w-4 text-green-600 mr-2" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium text-gray-700">
                         {sessionStats.correct}/{sessionStats.total}
                       </span>
                     </div>
                   </div>
-                  <div className="w-24 bg-gray-200 rounded-full h-2">
+                  <div className="w-16 sm:w-24 bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500 ease-out"
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 h-1.5 sm:h-2 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>
 
                 {/* Main content */}
-                <div className="flex-1 flex flex-col justify-center items-center text-center space-y-6">
-                  <div className="mb-6">
-                    <h2 className="text-5xl font-bold text-gray-900 mb-4">
+                <div className="flex-1 flex flex-col justify-center items-center text-center space-y-4 sm:space-y-6">
+                  <div className="mb-4 sm:mb-6">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
                       {capitalizeWord(currentWord.word)}
                     </h2>
                     {currentWord.type && (
-                      <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200">
+                      <span className="inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200">
                         {currentWord.type}
                       </span>
                     )}
@@ -601,7 +602,7 @@ export function Flashcards() {
                   <button
                     onClick={handleFlipCard}
                     disabled={isFlipping}
-                    className="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none text-sm sm:text-base"
                   >
                     <Eye className="h-6 w-6 mr-3" />
                     Show Translation
@@ -626,48 +627,48 @@ export function Flashcards() {
                 pointerEvents: showTranslation ? "auto" : "none",
               }}
             >
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-8 h-full flex flex-col overflow-hidden">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-3xl shadow-2xl border border-gray-200 p-4 sm:p-6 lg:p-8 h-full flex flex-col overflow-hidden">
                 {/* Progress info at top */}
-                <div className="flex items-center justify-between mb-6 flex-shrink-0">
-                  <div className="flex items-center space-x-4">
+                <div className="flex items-center justify-between mb-4 sm:mb-6 flex-shrink-0">
+                  <div className="flex items-center space-x-2 sm:space-x-4">
                     <div className="flex items-center">
-                      <Target className="h-4 w-4 text-green-600 mr-2" />
-                      <span className="text-sm font-medium text-gray-700">
-                        {currentIndex + 1} of {words.length}
+                      <Target className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        {currentIndex + 1}/{words.length}
                       </span>
                     </div>
                     <div className="flex items-center">
-                      <TrendingUp className="h-4 w-4 text-green-600 mr-2" />
-                      <span className="text-sm font-medium text-gray-700">
+                      <TrendingUp className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 mr-1 sm:mr-2" />
+                      <span className="text-xs sm:text-sm font-medium text-gray-700">
                         {sessionStats.correct}/{sessionStats.total}
                       </span>
                     </div>
                   </div>
-                  <div className="w-24 bg-gray-200 rounded-full h-2">
+                  <div className="w-16 sm:w-24 bg-gray-200 rounded-full h-1.5 sm:h-2">
                     <div
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all duration-500 ease-out"
+                      className="bg-gradient-to-r from-blue-500 to-purple-600 h-1.5 sm:h-2 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
                 </div>
 
                 {/* Main content with scroll */}
-                <div className="flex-1 flex flex-col text-center space-y-4 overflow-y-auto">
+                <div className="flex-1 flex flex-col text-center space-y-3 sm:space-y-4 overflow-y-auto">
                   <div className="flex-shrink-0">
-                    <h2 className="text-4xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-3 sm:mb-4">
                       {capitalizeWord(currentWord.translation)}
                     </h2>
-                    <div className="text-lg text-gray-600 italic">
+                    <div className="text-sm sm:text-base lg:text-lg text-gray-600 italic">
                       Translation of "{capitalizeWord(currentWord.word)}"
                     </div>
                   </div>
 
                   {/* Example sentences */}
                   {currentExamples.length > 0 && (
-                    <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-4 flex-shrink-0">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-base font-semibold text-gray-900 flex items-center">
-                          <BookOpen className="h-4 w-4 mr-2 text-blue-500" />
+                    <div className="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl p-3 sm:p-4 flex-shrink-0">
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
+                        <h3 className="text-sm sm:text-base font-semibold text-gray-900 flex items-center">
+                          <BookOpen className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 text-blue-500" />
                           Example Sentences
                         </h3>
                         {currentExamples.length > 1 && (
@@ -680,11 +681,11 @@ export function Flashcards() {
 
                       {loadingExamples ? (
                         <div className="flex items-center justify-center py-2">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+                          <div className="animate-spin rounded-full h-3 w-3 sm:h-4 sm:w-4 border-b-2 border-blue-500"></div>
                         </div>
                       ) : (
-                        <div className="space-y-3">
-                          <div className="text-base text-gray-800 font-medium bg-blue-50 p-3 rounded-lg">
+                        <div className="space-y-2 sm:space-y-3">
+                          <div className="text-sm sm:text-base text-gray-800 font-medium bg-blue-50 p-2 sm:p-3 rounded-lg">
                             "
                             {capitalizeSentence(
                               currentExamples[currentExampleIndex]?.sentence ||
@@ -694,7 +695,7 @@ export function Flashcards() {
                           </div>
                           {currentExamples[currentExampleIndex]
                             ?.translation && (
-                            <div className="text-gray-600 italic bg-gray-50 p-3 rounded-lg">
+                            <div className="text-xs sm:text-sm text-gray-600 italic bg-gray-50 p-2 sm:p-3 rounded-lg">
                               "
                               {capitalizeSentence(
                                 currentExamples[currentExampleIndex]
@@ -729,27 +730,21 @@ export function Flashcards() {
 
                   {/* Action buttons */}
                   <div
-                    className="flex justify-center space-x-4 pt-2 flex-shrink-0"
+                    className="flex justify-center space-x-3 sm:space-x-4 pt-2 flex-shrink-0"
                     style={{ pointerEvents: isDragging ? "none" : "auto" }}
                   >
                     <button
-                      onClick={() => {
-                        console.log("No button clicked");
-                        handleAnswer(false);
-                      }}
-                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 relative z-20"
+                      onClick={() => handleAnswer(false)}
+                      className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 relative z-20 text-sm sm:text-base"
                     >
-                      <XCircle className="w-5 h-5 mr-2" />
+                      <XCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                       No
                     </button>
                     <button
-                      onClick={() => {
-                        console.log("Yes button clicked");
-                        handleAnswer(true);
-                      }}
-                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 relative z-20"
+                      onClick={() => handleAnswer(true)}
+                      className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 relative z-20 text-sm sm:text-base"
                     >
-                      <Heart className="w-5 h-5 mr-2" />
+                      <Heart className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
                       Yes
                     </button>
                   </div>

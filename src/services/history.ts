@@ -172,15 +172,9 @@ export class HistoryService {
       type?: string;
     }>
   > {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
-
+    // Get all sessions (all time) instead of filtering by date
     const sessionsRef = collection(db, "users", userId, "sessions");
-    const q = query(
-      sessionsRef,
-      where("playedAt", ">=", Timestamp.fromDate(cutoffDate)),
-      orderBy("playedAt", "desc")
-    );
+    const q = query(sessionsRef, orderBy("playedAt", "desc"));
     const snapshot = await getDocs(q);
 
     const sessions = snapshot.docs.map((doc) => ({
