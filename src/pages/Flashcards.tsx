@@ -7,6 +7,7 @@ import { DifficultyService } from "@/services/difficulty";
 import { ExamplesService } from "@/services/examples";
 import { WordDoc, Difficulty, ExampleSentence } from "@/types/models";
 import { capitalizeWord, capitalizeSentence } from "@/utils/formatting";
+import { GameResultsModal } from "@/components/GameResultsModal";
 import {
   RotateCcw,
   Check,
@@ -61,6 +62,14 @@ export function Flashcards() {
   >([]);
   const [currentExampleIndex, setCurrentExampleIndex] = useState(0);
   const [loadingExamples, setLoadingExamples] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [sessionEnded, setSessionEnded] = useState(false);
+  const [finalStats, setFinalStats] = useState({
+    correct: 0,
+    total: 0,
+    percentage: 0,
+    duration: 0,
+  });
 
   useEffect(() => {
     if (user) {
@@ -325,10 +334,16 @@ export function Flashcards() {
     const percentage = Math.round(
       (finalStats.correct / finalStats.total) * 100
     );
-    alert(
-      `Session completed! You got ${finalStats.correct} out of ${finalStats.total} correct (${percentage}%).`
-    );
-    navigate("/dashboard");
+    const duration = Math.round((Date.now() - startTime.getTime()) / 1000);
+
+    setFinalStats({
+      correct: finalStats.correct,
+      total: finalStats.total,
+      percentage,
+      duration,
+    });
+    setSessionEnded(true);
+    setShowResults(true);
   };
 
   const resetSession = () => {
@@ -341,6 +356,7 @@ export function Flashcards() {
     // Reset drag states
     setIsDragging(false);
     setDragOffset(0);
+    setSessionEnded(false);
   };
 
   if (loading) {
@@ -453,7 +469,11 @@ export function Flashcards() {
 
       {/* Flashcard */}
       <div className="flex justify-center">
-        <div className="relative w-full max-w-2xl h-[500px] perspective-1000">
+        <div
+          className={`relative w-full max-w-2xl h-[500px] perspective-1000 ${
+            sessionEnded ? "opacity-0 pointer-events-none" : ""
+          }`}
+        >
           {/* Drag feedback overlay */}
           {isDragging &&
             showTranslation &&
@@ -739,6 +759,22 @@ export function Flashcards() {
           </div>
         </div>
       </div>
+
+      {/* Results Modal */}
+      <GameResultsModal
+        isOpen={showResults}
+        onClose={() => setShowResults(false)}
+        onPlayAgain={() => {
+          setShowResults(false);
+          resetSession();
+        }}
+        onHistory={() => {
+          setShowResults(false);
+          navigate("/history");
+        }}
+        stats={finalStats}
+        gameType="flashcards"
+      />
     </div>
   );
 }

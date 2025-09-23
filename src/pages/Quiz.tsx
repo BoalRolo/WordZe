@@ -7,7 +7,7 @@ import { QuizService } from "@/services/quiz";
 import { DifficultyService } from "@/services/difficulty";
 import { ExamplesService } from "@/services/examples";
 import { WordDoc, Difficulty, QuizItem, ExampleSentence } from "@/types/models";
-import { GameCompletion } from "@/components/GameCompletion";
+import { GameResultsModal } from "@/components/GameResultsModal";
 import {
   formatWordForDisplay,
   formatTranslationForDisplay,
@@ -468,7 +468,9 @@ export function Quiz() {
                 className={buttonClass}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-lg">{formatTranslationForDisplay(option)}</span>
+                  <span className="text-lg">
+                    {formatTranslationForDisplay(option)}
+                  </span>
                   {showResult && isCorrect && (
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   )}
@@ -563,13 +565,22 @@ export function Quiz() {
         )}
       </div>
 
-      {/* Game Completion Animation */}
-      <GameCompletion
-        isVisible={showCompletion}
-        gameType="quiz"
-        stats={completionStats}
+      {/* Game Results Modal */}
+      <GameResultsModal
+        isOpen={showCompletion}
+        onClose={() => setShowCompletion(false)}
         onPlayAgain={handlePlayAgain}
-        onGoHome={handleGoHome}
+        onHistory={() => {
+          setShowCompletion(false);
+          navigate("/history");
+        }}
+        stats={{
+          correct: completionStats.correctAnswers,
+          total: completionStats.total,
+          percentage: completionStats.accuracy,
+          duration: completionStats.duration,
+        }}
+        gameType="quiz"
       />
     </div>
   );
