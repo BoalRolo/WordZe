@@ -34,9 +34,6 @@ export function Words() {
   const [showFailedOnly, setShowFailedOnly] = useState(false);
   const [expandedWords, setExpandedWords] = useState<Set<string>>(new Set());
   const [typeFilter, setTypeFilter] = useState<string>("all");
-  const [hasExamplesFilter, setHasExamplesFilter] = useState<boolean | null>(
-    null
-  );
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
@@ -47,14 +44,7 @@ export function Words() {
 
   useEffect(() => {
     applyFilters();
-  }, [
-    words,
-    difficultyFilter,
-    showFailedOnly,
-    typeFilter,
-    hasExamplesFilter,
-    searchQuery,
-  ]);
+  }, [words, difficultyFilter, showFailedOnly, typeFilter, searchQuery]);
 
   const loadWords = async () => {
     if (!user) return;
@@ -97,13 +87,6 @@ export function Words() {
 
     if (typeFilter !== "all") {
       filtered = filtered.filter((word) => word.type === typeFilter);
-    }
-
-    if (hasExamplesFilter !== null) {
-      // Note: This filter is not fully implemented yet as it would require
-      // checking the examples subcollection for each word, which is expensive.
-      // For now, we'll skip this filter or implement it with a different approach.
-      // TODO: Implement efficient examples filter
     }
 
     setFilteredWords(filtered);
@@ -213,8 +196,7 @@ export function Words() {
         {(searchQuery ||
           difficultyFilter !== "all" ||
           showFailedOnly ||
-          typeFilter !== "all" ||
-          hasExamplesFilter !== null) && (
+          typeFilter !== "all") && (
           <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-blue-600 font-medium">
             {searchQuery ? (
               <>
@@ -233,7 +215,7 @@ export function Words() {
 
       {/* Enhanced Filters */}
       <div className="bg-gradient-to-r from-white to-gray-50 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Difficulty Filter */}
           <div className="flex items-center space-x-3">
             <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
@@ -296,44 +278,6 @@ export function Words() {
               </option>
               <option value="phrasal verb" className="text-red-700 font-medium">
                 🔗 Phrasal Verbs
-              </option>
-            </select>
-          </div>
-
-          {/* Examples Filter */}
-          <div className="flex items-center space-x-3">
-            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
-            <select
-              value={
-                hasExamplesFilter === null
-                  ? "all"
-                  : hasExamplesFilter
-                  ? "yes"
-                  : "no"
-              }
-              onChange={(e) => {
-                if (e.target.value === "all") {
-                  setHasExamplesFilter(null);
-                } else {
-                  setHasExamplesFilter(e.target.value === "yes");
-                }
-              }}
-              className="flex-1 border-2 border-gradient-to-r from-purple-300 to-pink-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-purple-50 to-pink-50 shadow-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 hover:from-purple-100 hover:to-pink-100 transition-all duration-200"
-              style={{
-                background: "linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%)",
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-                borderImage: "linear-gradient(135deg, #8b5cf6, #ec4899) 1",
-              }}
-            >
-              <option value="all" className="text-gray-600">
-                All words
-              </option>
-              <option value="yes" className="text-purple-700 font-medium">
-                📝 With examples
-              </option>
-              <option value="no" className="text-gray-700 font-medium">
-                📄 Without examples
               </option>
             </select>
           </div>
