@@ -3,6 +3,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { HistoryService } from "@/services/history";
 import { QuizHistoryItem } from "@/types/models";
 import { capitalizeWord, capitalizeSentence } from "@/utils/formatting";
+import { Pagination } from "@/components/Pagination";
 import {
   Calendar,
   Clock,
@@ -38,11 +39,26 @@ export function History() {
   const [activeTab, setActiveTab] = useState<"all" | "today" | "failed">("all");
   const [expandedWords, setExpandedWords] = useState<Set<string>>(new Set());
 
+  // Pagination states
+  const [sessionsCurrentPage, setSessionsCurrentPage] = useState(1);
+  const [failedWordsCurrentPage, setFailedWordsCurrentPage] = useState(1);
+  const [sessionsTotalPages, setSessionsTotalPages] = useState(1);
+  const [failedWordsTotalPages, setFailedWordsTotalPages] = useState(1);
+  const itemsPerPage = 10;
+
   useEffect(() => {
     if (user) {
       loadHistory();
     }
   }, [user]);
+
+  useEffect(() => {
+    updateSessionsPagination();
+  }, [history, sessionsCurrentPage]);
+
+  useEffect(() => {
+    updateFailedWordsPagination();
+  }, [failedWords, failedWordsCurrentPage]);
 
   const loadHistory = async () => {
     if (!user) return;
@@ -81,6 +97,43 @@ export function History() {
       }
       return newSet;
     });
+  };
+
+  // Pagination functions
+  const getPaginatedSessions = () => {
+    const startIndex = (sessionsCurrentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return history.slice(startIndex, endIndex);
+  };
+
+  const getPaginatedFailedWords = () => {
+    const startIndex = (failedWordsCurrentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return failedWords.slice(startIndex, endIndex);
+  };
+
+  const updateSessionsPagination = () => {
+    const totalPages = Math.ceil(history.length / itemsPerPage);
+    setSessionsTotalPages(totalPages);
+    if (sessionsCurrentPage > totalPages && totalPages > 0) {
+      setSessionsCurrentPage(1);
+    }
+  };
+
+  const updateFailedWordsPagination = () => {
+    const totalPages = Math.ceil(failedWords.length / itemsPerPage);
+    setFailedWordsTotalPages(totalPages);
+    if (failedWordsCurrentPage > totalPages && totalPages > 0) {
+      setFailedWordsCurrentPage(1);
+    }
+  };
+
+  const handleSessionsPageChange = (page: number) => {
+    setSessionsCurrentPage(page);
+  };
+
+  const handleFailedWordsPageChange = (page: number) => {
+    setFailedWordsCurrentPage(page);
   };
 
   const getScoreColor = (percentage: number): string => {
@@ -161,7 +214,11 @@ export function History() {
   }
 
   const currentData =
-    activeTab === "all" ? history : activeTab === "today" ? todayHistory : [];
+    activeTab === "all"
+      ? getPaginatedSessions()
+      : activeTab === "today"
+      ? todayHistory
+      : [];
 
   return (
     <div className="space-y-6 px-4 sm:px-6 lg:px-8">
@@ -320,7 +377,7 @@ export function History() {
             </div>
           ) : (
             <div className="grid gap-3 sm:gap-4">
-              {failedWords.map((item, index) => {
+              {getPaginatedFailedWords().map((item, index) => {
                 const isExpanded = expandedWords.has(item.wordId);
                 const hasExamples = item.examples && item.examples.length > 0;
 
@@ -465,6 +522,20 @@ export function History() {
               })}
             </div>
           )}
+
+          {/* Failed Words Pagination */}
+          {failedWordsTotalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={failedWordsCurrentPage}
+                totalPages={failedWordsTotalPages}
+                onPageChange={handleFailedWordsPageChange}
+                itemsPerPage={itemsPerPage}
+                totalItems={failedWords.length}
+                showInfo={true}
+              />
+            </div>
+          )}
         </div>
       ) : (
         <div className="space-y-4">
@@ -563,6 +634,20 @@ export function History() {
                   )}
                 </div>
               ))}
+            </div>
+          )}
+
+          {/* Sessions Pagination */}
+          {activeTab === "all" && sessionsTotalPages > 1 && (
+            <div className="mt-8">
+              <Pagination
+                currentPage={sessionsCurrentPage}
+                totalPages={sessionsTotalPages}
+                onPageChange={handleSessionsPageChange}
+                itemsPerPage={itemsPerPage}
+                totalItems={history.length}
+                showInfo={true}
+              />
             </div>
           )}
         </div>

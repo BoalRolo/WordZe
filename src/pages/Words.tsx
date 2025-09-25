@@ -5,6 +5,7 @@ import { WordsService } from "@/services/words";
 import { DifficultyService } from "@/services/difficulty";
 import { WordDoc, Difficulty } from "@/types/models";
 import { ExampleSentences } from "@/components/ExampleSentences";
+import { Pagination } from "@/components/Pagination";
 import {
   formatWordForDisplay,
   formatTranslationForDisplay,
@@ -28,6 +29,9 @@ export function Words() {
     (WordDoc & { id: string })[]
   >([]);
   const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const wordsPerPage = 10;
   const [difficultyFilter, setDifficultyFilter] = useState<Difficulty | "all">(
     "all"
   );
@@ -44,7 +48,14 @@ export function Words() {
 
   useEffect(() => {
     applyFilters();
-  }, [words, difficultyFilter, showFailedOnly, typeFilter, searchQuery]);
+  }, [
+    words,
+    difficultyFilter,
+    showFailedOnly,
+    typeFilter,
+    searchQuery,
+    currentPage,
+  ]);
 
   const loadWords = async () => {
     if (!user) return;
@@ -89,7 +100,21 @@ export function Words() {
       filtered = filtered.filter((word) => word.type === typeFilter);
     }
 
-    setFilteredWords(filtered);
+    // Calculate pagination
+    const totalPagesCount = Math.ceil(filtered.length / wordsPerPage);
+    setTotalPages(totalPagesCount);
+
+    // Reset to page 1 if current page is beyond available pages
+    if (currentPage > totalPagesCount && totalPagesCount > 0) {
+      setCurrentPage(1);
+    }
+
+    // Get words for current page
+    const startIndex = (currentPage - 1) * wordsPerPage;
+    const endIndex = startIndex + wordsPerPage;
+    const paginatedWords = filtered.slice(startIndex, endIndex);
+
+    setFilteredWords(paginatedWords);
   };
 
   const handleDelete = async (wordId: string) => {
@@ -103,6 +128,10 @@ export function Words() {
         console.error("Error deleting word:", error);
       }
     }
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
 
   const getDifficultyColor = (word: WordDoc) => {
@@ -202,11 +231,13 @@ export function Words() {
               <>
                 Found {filteredWords.length} word
                 {filteredWords.length !== 1 ? "s" : ""} matching "{searchQuery}"
+                (Page {currentPage} of {totalPages})
               </>
             ) : (
               <>
                 Showing {filteredWords.length} of {words.length} word
-                {words.length !== 1 ? "s" : ""}
+                {words.length !== 1 ? "s" : ""} (Page {currentPage} of{" "}
+                {totalPages})
               </>
             )}
           </div>
@@ -455,6 +486,16 @@ export function Words() {
           ))}
         </div>
       )}
+
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={wordsPerPage}
+        totalItems={words.length}
+        showInfo={true}
+      />
     </div>
   );
 }
