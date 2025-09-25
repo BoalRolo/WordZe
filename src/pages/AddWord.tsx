@@ -19,21 +19,40 @@ export function AddWord() {
   });
 
   const [examples, setExamples] = useState<
-    Array<{ sentence: string; translation: string }>
-  >([{ sentence: "", translation: "" }]); // Start with one mandatory example
+    Array<{ sentence: string; translation: string; isValid?: boolean }>
+  >([{ sentence: "", translation: "", isValid: false }]); // Start with one mandatory example
   const [newExample, setNewExample] = useState({
     sentence: "",
     translation: "",
   });
+
+  // Function to validate if example contains the word
+  const validateExample = (sentence: string, word: string): boolean => {
+    if (!sentence.trim() || !word.trim()) return false;
+    const wordLower = word.toLowerCase().trim();
+    const sentenceLower = sentence.toLowerCase();
+    return sentenceLower.includes(wordLower);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
 
     // Validate that at least one example sentence is provided
-    const validExamples = examples.filter(ex => ex.sentence.trim() !== "");
+    const validExamples = examples.filter((ex) => ex.sentence.trim() !== "");
     if (validExamples.length === 0) {
       setError("At least one example sentence is required");
+      return;
+    }
+
+    // Validate that all examples contain the word
+    const invalidExamples = validExamples.filter(
+      (ex) => !validateExample(ex.sentence, formData.word)
+    );
+    if (invalidExamples.length > 0) {
+      setError(
+        `All example sentences must contain the word "${formData.word}". Please check your examples.`
+      );
       return;
     }
 
@@ -100,11 +119,20 @@ export function AddWord() {
   ) => {
     const updatedExamples = [...examples];
     updatedExamples[index] = { ...updatedExamples[index], [field]: value };
+
+    // Validate the example if it's a sentence field
+    if (field === "sentence") {
+      updatedExamples[index].isValid = validateExample(value, formData.word);
+    }
+
     setExamples(updatedExamples);
   };
 
   const addNewExampleField = () => {
-    setExamples([...examples, { sentence: "", translation: "" }]);
+    setExamples([
+      ...examples,
+      { sentence: "", translation: "", isValid: false },
+    ]);
   };
 
   return (
@@ -222,18 +250,30 @@ export function AddWord() {
             onChange={handleChange}
             className="block w-full border-2 border-gradient-to-r from-blue-300 to-purple-300 rounded-xl px-4 py-3 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium text-gray-800 hover:from-blue-100 hover:to-purple-100 transition-all duration-200"
             style={{
-              background: 'linear-gradient(135deg, #dbeafe 0%, #f3e8ff 100%)',
-              border: '2px solid transparent',
-              backgroundClip: 'padding-box',
-              borderImage: 'linear-gradient(135deg, #3b82f6, #8b5cf6) 1'
+              background: "linear-gradient(135deg, #dbeafe 0%, #f3e8ff 100%)",
+              border: "2px solid transparent",
+              backgroundClip: "padding-box",
+              borderImage: "linear-gradient(135deg, #3b82f6, #8b5cf6) 1",
             }}
           >
-            <option value="" className="text-gray-500">Select type (optional)</option>
-            <option value="noun" className="text-blue-700 font-medium">📚 Noun</option>
-            <option value="verb" className="text-green-700 font-medium">🏃 Verb</option>
-            <option value="adjective" className="text-purple-700 font-medium">✨ Adjective</option>
-            <option value="adverb" className="text-orange-700 font-medium">⚡ Adverb</option>
-            <option value="phrasal verb" className="text-red-700 font-medium">🔗 Phrasal Verb</option>
+            <option value="" className="text-gray-500">
+              Select type (optional)
+            </option>
+            <option value="noun" className="text-blue-700 font-medium">
+              📚 Noun
+            </option>
+            <option value="verb" className="text-green-700 font-medium">
+              🏃 Verb
+            </option>
+            <option value="adjective" className="text-purple-700 font-medium">
+              ✨ Adjective
+            </option>
+            <option value="adverb" className="text-orange-700 font-medium">
+              ⚡ Adverb
+            </option>
+            <option value="phrasal verb" className="text-red-700 font-medium">
+              🔗 Phrasal Verb
+            </option>
           </select>
         </div>
 
@@ -247,14 +287,50 @@ export function AddWord() {
             <span className="text-sm text-red-500">Required</span>
           </div>
 
+          {/* Help text */}
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <p className="text-sm text-blue-700">
+              <strong>💡 Tip:</strong> Each example sentence must contain the
+              word "
+              <span className="font-semibold">
+                {formData.word || "your word"}
+              </span>
+              " to ensure accuracy.
+            </p>
+          </div>
+
           {/* Example Sentences List */}
           <div className="space-y-4">
             {examples.map((example, index) => (
-              <div key={index} className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+              <div
+                key={index}
+                className={`border rounded-xl p-4 ${
+                  example.sentence && formData.word
+                    ? example.isValid
+                      ? "bg-green-50 border-green-200"
+                      : "bg-red-50 border-red-200"
+                    : "bg-blue-50 border-blue-200"
+                }`}
+              >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-gray-700">
-                    Example {index + 1}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      Example {index + 1}
+                    </span>
+                    {example.sentence && formData.word && (
+                      <span
+                        className={`text-xs px-2 py-1 rounded-full ${
+                          example.isValid
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {example.isValid
+                          ? "✓ Valid"
+                          : "✗ Must contain the word"}
+                      </span>
+                    )}
+                  </div>
                   {examples.length > 1 && (
                     <button
                       type="button"
@@ -266,7 +342,7 @@ export function AddWord() {
                     </button>
                   )}
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -275,8 +351,14 @@ export function AddWord() {
                     <input
                       type="text"
                       value={example.sentence}
-                      onChange={(e) => updateExample(index, "sentence", e.target.value)}
-                      placeholder={`Example: "I ${formData.word || 'word'} every day"`}
+                      onChange={(e) =>
+                        updateExample(index, "sentence", e.target.value)
+                      }
+                      placeholder={
+                        formData.word
+                          ? `Example: "I ${formData.word} every day"`
+                          : "Example: Enter a sentence containing your word"
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required
                     />
@@ -288,8 +370,14 @@ export function AddWord() {
                     <input
                       type="text"
                       value={example.translation}
-                      onChange={(e) => updateExample(index, "translation", e.target.value)}
-                      placeholder={`Translation: "Eu ${formData.translation || 'translation'} todos os dias"`}
+                      onChange={(e) =>
+                        updateExample(index, "translation", e.target.value)
+                      }
+                      placeholder={
+                        formData.translation
+                          ? `Translation: "Eu ${formData.translation} todos os dias"`
+                          : "Translation: Enter the Portuguese translation"
+                      }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -328,7 +416,6 @@ export function AddWord() {
             placeholder="Additional notes or tips"
           />
         </div>
-
 
         <div className="flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-4 pt-6">
           <button
