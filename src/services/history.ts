@@ -14,6 +14,7 @@ import {
   WordDoc,
   ExampleSentence,
 } from "@/types/models";
+import { DifficultyService } from "./difficulty";
 
 export class HistoryService {
   static async getQuizHistory(
@@ -257,7 +258,7 @@ export class HistoryService {
           lastFailed: data.lastFailed.toLocaleDateString(),
           examples: examples,
           type: word?.type || "unknown",
-          difficulty: word?.difficulty || "medium",
+          difficulty: word ? DifficultyService.calculateDifficulty(word) : "medium",
         };
       })
     );
