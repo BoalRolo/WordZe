@@ -13,16 +13,13 @@ export function capitalizeWord(word: string): string {
 }
 
 /**
- * Capitalizes the first letter of each word in a sentence
+ * Capitalizes only the first letter of a sentence
  * @param sentence - The sentence to capitalize
- * @returns The sentence with each word's first letter capitalized
+ * @returns The sentence with only the first letter capitalized
  */
 export function capitalizeSentence(sentence: string): string {
   if (!sentence || sentence.length === 0) return sentence;
-  return sentence
-    .split(' ')
-    .map(word => capitalizeWord(word))
-    .join(' ');
+  return sentence.charAt(0).toUpperCase() + sentence.slice(1).toLowerCase();
 }
 
 /**

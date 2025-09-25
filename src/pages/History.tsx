@@ -31,6 +31,7 @@ export function History() {
       lastFailed: string;
       examples?: Array<{ sentence: string; translation?: string }>;
       type?: string;
+      difficulty?: string;
     }>
   >([]);
   const [loading, setLoading] = useState(true);
@@ -358,6 +359,24 @@ export function History() {
                             <span className="text-gray-500">Failed:</span>
                             <span className="font-semibold text-red-700">
                               {item.failCount} times
+                            </span>
+                          </div>
+                          <div className="flex items-center space-x-1 sm:space-x-2">
+                            <span className="text-gray-500">Level:</span>
+                            <span
+                              className={`font-semibold px-2 py-1 rounded-full text-xs ${
+                                item.difficulty === "easy"
+                                  ? "bg-green-100 text-green-700"
+                                  : item.difficulty === "medium"
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              {item.difficulty === "easy"
+                                ? "🟢 Easy"
+                                : item.difficulty === "medium"
+                                ? "🟡 Medium"
+                                : "🔴 Hard"}
                             </span>
                           </div>
                           <div className="flex items-center space-x-1 sm:space-x-2">

@@ -170,6 +170,7 @@ export class HistoryService {
       lastFailed: string;
       examples?: Array<{ sentence: string; translation?: string }>;
       type?: string;
+      difficulty?: string;
     }>
   > {
     // Get all sessions (all time) instead of filtering by date
@@ -256,6 +257,7 @@ export class HistoryService {
           lastFailed: data.lastFailed.toLocaleDateString(),
           examples: examples,
           type: word?.type || "unknown",
+          difficulty: word?.difficulty || "medium",
         };
       })
     );
