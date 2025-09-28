@@ -11,6 +11,7 @@ import { GameResultsModal } from "@/components/GameResultsModal";
 import {
   formatWordForDisplay,
   formatTranslationForDisplay,
+  capitalizeSentence,
 } from "@/utils/formatting";
 import {
   RotateCcw,
@@ -521,11 +522,11 @@ export function Quiz() {
                 ) : (
                   <div className="space-y-2 sm:space-y-3">
                     <div className="text-base sm:text-lg text-gray-800 font-medium">
-                      "{currentExamples[currentExampleIndex]?.sentence}"
+                      "{capitalizeSentence(currentExamples[currentExampleIndex]?.sentence || "")}"
                     </div>
                     {currentExamples[currentExampleIndex]?.translation && (
                       <div className="text-sm sm:text-base text-gray-600 italic">
-                        "{currentExamples[currentExampleIndex].translation}"
+                        "{capitalizeSentence(currentExamples[currentExampleIndex].translation)}"
                       </div>
                     )}
 

@@ -20,24 +20,36 @@ export class WordsService {
     word: string,
     translation: string,
     type?: string,
-    notes?: string
+    notes?: string,
+    categories?: string[],
+    difficulty?: string,
+    phonetic?: string
   ): Promise<string> {
     // Validate word type
     const validTypes = [
-      "verb",
       "noun",
-      "phrasal verb",
+      "verb", 
       "adjective",
       "adverb",
+      "phrase",
+      "idiom",
     ] as const;
     const validatedType =
       type && validTypes.includes(type as any) ? (type as any) : undefined;
+
+    // Validate difficulty
+    const validDifficulties = ["beginner", "intermediate", "advanced"] as const;
+    const validatedDifficulty =
+      difficulty && validDifficulties.includes(difficulty as any) ? (difficulty as any) : undefined;
 
     const wordData: Omit<WordDoc, "createdAt"> = {
       word: word.toLowerCase().trim(),
       translation: translation.toLowerCase().trim(),
       type: validatedType,
       notes: notes || undefined,
+      categories: categories && categories.length > 0 ? categories : undefined,
+      difficulty: validatedDifficulty,
+      phonetic: phonetic || undefined,
       attempts: 0,
       successes: 0,
       fails: 0,
@@ -70,9 +82,7 @@ export class WordsService {
   static async updateWord(
     userId: string,
     wordId: string,
-    updates: Partial<
-      Pick<WordDoc, "word" | "translation" | "type" | "notes">
-    >
+    updates: Partial<Pick<WordDoc, "word" | "translation" | "type" | "notes">>
   ): Promise<void> {
     const wordRef = doc(db, "users", userId, "words", wordId);
 
@@ -82,12 +92,16 @@ export class WordsService {
       processedUpdates.word = processedUpdates.word.toLowerCase().trim();
     }
     if (processedUpdates.translation) {
-      processedUpdates.translation = processedUpdates.translation.toLowerCase().trim();
+      processedUpdates.translation = processedUpdates.translation
+        .toLowerCase()
+        .trim();
     }
 
     // Remove undefined values before sending to Firestore
     const cleanUpdates = Object.fromEntries(
-      Object.entries(processedUpdates).filter(([_, value]) => value !== undefined)
+      Object.entries(processedUpdates).filter(
+        ([_, value]) => value !== undefined
+      )
     );
 
     await updateDoc(wordRef, cleanUpdates);

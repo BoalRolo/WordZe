@@ -1,9 +1,57 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { WordsService } from "@/services/words";
 import { ExamplesService } from "@/services/examples";
-import { Plus, X, BookOpen } from "lucide-react";
+import { Plus, X, BookOpen, Tag, Check } from "lucide-react";
+import { categories, Category } from "@/data/categories";
+
+const wordTypes = [
+  {
+    id: "noun",
+    label: "📚 Noun",
+    description: "A person, place, thing, or idea",
+  },
+  { id: "verb", label: "🏃 Verb", description: "An action or state of being" },
+  {
+    id: "adjective",
+    label: "✨ Adjective",
+    description: "Describes or modifies a noun",
+  },
+  {
+    id: "adverb",
+    label: "⚡ Adverb",
+    description: "Describes or modifies a verb, adjective, or other adverb",
+  },
+  {
+    id: "phrase",
+    label: "📝 Phrase",
+    description: "A group of words expressing a single idea",
+  },
+  {
+    id: "idiom",
+    label: "💡 Idiom",
+    description: "An expression with a meaning different from literal words",
+  },
+];
+
+const difficultyLevels = [
+  {
+    id: "beginner",
+    label: "🟢 Beginner",
+    description: "Basic level words for beginners",
+  },
+  {
+    id: "intermediate",
+    label: "🟡 Intermediate",
+    description: "Intermediate level words",
+  },
+  {
+    id: "advanced",
+    label: "🔴 Advanced",
+    description: "Advanced level words",
+  },
+];
 
 export function AddWord() {
   const { user } = useAuth();
@@ -15,8 +63,18 @@ export function AddWord() {
     word: "",
     translation: "",
     type: "",
+    difficulty: "",
     notes: "",
   });
+
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
+  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
+  const [showDifficultyDropdown, setShowDifficultyDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const typeDropdownRef = useRef<HTMLDivElement>(null);
+  const difficultyDropdownRef = useRef<HTMLDivElement>(null);
 
   const [examples, setExamples] = useState<
     Array<{ sentence: string; translation: string; isValid?: boolean }>
@@ -60,13 +118,29 @@ export function AddWord() {
     setError("");
 
     try {
+      // Check if word already exists
+      const existingWords = await WordsService.getWords(user.uid);
+      const existingWord = existingWords.find(
+        (word) => word.word.toLowerCase() === formData.word.toLowerCase()
+      );
+
+      if (existingWord) {
+        setError(
+          `The word "${formData.word}" already exists in your vocabulary with the translation "${existingWord.translation}". Please choose a different word or edit the existing one.`
+        );
+        setLoading(false);
+        return;
+      }
+
       // Add the word first (without the old example field)
       const wordId = await WordsService.addWord(
         user.uid,
         formData.word.trim(),
         formData.translation.trim(),
         formData.type?.trim() || undefined,
-        formData.notes?.trim() || undefined
+        formData.notes?.trim() || undefined,
+        selectedCategories.length > 0 ? selectedCategories : undefined,
+        formData.difficulty?.trim() || undefined
       );
 
       // Add example sentences
@@ -134,6 +208,103 @@ export function AddWord() {
       { sentence: "", translation: "", isValid: false },
     ]);
   };
+
+  const toggleCategory = (categoryId: string) => {
+    setSelectedCategories((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId]
+    );
+  };
+
+  const handleDropdownToggle = () => {
+    setShowCategoryDropdown(!showCategoryDropdown);
+    if (showCategoryDropdown) {
+      setCategorySearch(""); // Clear search when closing
+    }
+  };
+
+  const handleTypeDropdownToggle = () => {
+    setShowTypeDropdown(!showTypeDropdown);
+  };
+
+  const selectType = (typeId: string) => {
+    setFormData((prev) => ({ ...prev, type: typeId }));
+    setShowTypeDropdown(false);
+  };
+
+  const getSelectedTypeLabel = () => {
+    const selectedType = wordTypes.find((type) => type.id === formData.type);
+    return selectedType ? selectedType.label : "Select type (optional)";
+  };
+
+  const handleDifficultyDropdownToggle = () => {
+    setShowDifficultyDropdown(!showDifficultyDropdown);
+  };
+
+  const selectDifficulty = (difficultyId: string) => {
+    setFormData((prev) => ({ ...prev, difficulty: difficultyId }));
+    setShowDifficultyDropdown(false);
+  };
+
+  const getSelectedDifficultyLabel = () => {
+    const selectedDifficulty = difficultyLevels.find(
+      (level) => level.id === formData.difficulty
+    );
+    return selectedDifficulty
+      ? selectedDifficulty.label
+      : "Select difficulty (optional)";
+  };
+
+  const removeCategory = (categoryId: string) => {
+    setSelectedCategories((prev) => prev.filter((id) => id !== categoryId));
+  };
+
+  const getSelectedCategoryLabels = () => {
+    return selectedCategories
+      .map((id) => categories.find((cat) => cat.id === id)?.label)
+      .filter(Boolean);
+  };
+
+  const getFilteredCategories = () => {
+    if (!categorySearch.trim()) return categories;
+
+    const searchTerm = categorySearch.toLowerCase();
+    return categories.filter(
+      (category) =>
+        category.label.toLowerCase().includes(searchTerm) ||
+        category.description.toLowerCase().includes(searchTerm)
+    );
+  };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowCategoryDropdown(false);
+      }
+      if (
+        typeDropdownRef.current &&
+        !typeDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowTypeDropdown(false);
+      }
+      if (
+        difficultyDropdownRef.current &&
+        !difficultyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowDifficultyDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div
@@ -237,44 +408,251 @@ export function AddWord() {
         </div>
 
         <div>
-          <label
-            htmlFor="type"
-            className="block text-sm font-semibold text-gray-700 mb-2"
-          >
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
             Type
           </label>
-          <select
-            name="type"
-            id="type"
-            value={formData.type}
-            onChange={handleChange}
-            className="block w-full border-2 border-gradient-to-r from-blue-300 to-purple-300 rounded-xl px-4 py-3 shadow-lg bg-gradient-to-r from-blue-50 to-purple-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg font-medium text-gray-800 hover:from-blue-100 hover:to-purple-100 transition-all duration-200"
-            style={{
-              background: "linear-gradient(135deg, #dbeafe 0%, #f3e8ff 100%)",
-              border: "2px solid transparent",
-              backgroundClip: "padding-box",
-              borderImage: "linear-gradient(135deg, #3b82f6, #8b5cf6) 1",
-            }}
-          >
-            <option value="" className="text-gray-500">
-              Select type (optional)
-            </option>
-            <option value="noun" className="text-blue-700 font-medium">
-              📚 Noun
-            </option>
-            <option value="verb" className="text-green-700 font-medium">
-              🏃 Verb
-            </option>
-            <option value="adjective" className="text-purple-700 font-medium">
-              ✨ Adjective
-            </option>
-            <option value="adverb" className="text-orange-700 font-medium">
-              ⚡ Adverb
-            </option>
-            <option value="phrasal verb" className="text-red-700 font-medium">
-              🔗 Phrasal Verb
-            </option>
-          </select>
+          <p className="text-sm text-gray-600 mb-4">
+            Select the word type (optional)
+          </p>
+
+          {/* Type Dropdown */}
+          <div className="relative" ref={typeDropdownRef}>
+            <button
+              type="button"
+              onClick={handleTypeDropdownToggle}
+              className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            >
+              <span className="text-gray-700">{getSelectedTypeLabel()}</span>
+              <svg
+                className={`h-5 w-5 text-gray-400 transition-transform ${
+                  showTypeDropdown ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {showTypeDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg">
+                <div className="p-2">
+                  {wordTypes.map((type) => (
+                    <div
+                      key={type.id}
+                      className="flex items-start p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                      onClick={() => selectType(type.id)}
+                    >
+                      <div className="flex items-center h-5">
+                        {formData.type === type.id ? (
+                          <Check className="h-4 w-4 text-blue-600" />
+                        ) : (
+                          <div className="h-4 w-4 border border-gray-300 rounded" />
+                        )}
+                      </div>
+                      <div className="ml-3 flex-1">
+                        <div className="text-sm font-medium text-gray-900">
+                          {type.label}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {type.description}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Difficulty Section */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            Difficulty
+          </label>
+          <p className="text-sm text-gray-600 mb-4">
+            Select the difficulty level (optional)
+          </p>
+
+          {/* Difficulty Dropdown */}
+          <div className="relative" ref={difficultyDropdownRef}>
+            <button
+              type="button"
+              onClick={handleDifficultyDropdownToggle}
+              className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            >
+              <span className="text-gray-700">
+                {getSelectedDifficultyLabel()}
+              </span>
+              <svg
+                className={`h-5 w-5 text-gray-400 transition-transform ${
+                  showDifficultyDropdown ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {showDifficultyDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg">
+                <div className="p-2">
+                  {difficultyLevels.map((level) => (
+                    <div
+                      key={level.id}
+                      className="flex items-start p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                      onClick={() => selectDifficulty(level.id)}
+                    >
+                      <div className="flex items-center h-5">
+                        {formData.difficulty === level.id ? (
+                          <Check className="h-4 w-4 text-blue-600" />
+                        ) : (
+                          <div className="h-4 w-4 border border-gray-300 rounded" />
+                        )}
+                      </div>
+                      <div className="ml-3 flex-1">
+                        <div className="text-sm font-medium text-gray-900">
+                          {level.label}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {level.description}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Categories Section */}
+        <div>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <Tag className="h-4 w-4 inline mr-1" />
+            Categories
+          </label>
+          <p className="text-sm text-gray-600 mb-4">
+            Select one or more categories that best describe this word
+            (optional)
+          </p>
+
+          {/* Selected Categories Display */}
+          {selectedCategories.length > 0 && (
+            <div className="mb-4">
+              <div className="flex flex-wrap gap-2">
+                {getSelectedCategoryLabels().map((label, index) => (
+                  <span
+                    key={selectedCategories[index]}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
+                  >
+                    {label}
+                    <button
+                      type="button"
+                      onClick={() => removeCategory(selectedCategories[index])}
+                      className="ml-2 text-blue-600 hover:text-blue-800"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Category Dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              type="button"
+              onClick={handleDropdownToggle}
+              className="w-full flex items-center justify-between px-4 py-3 border border-gray-300 rounded-xl bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+            >
+              <span className="text-gray-700">
+                {selectedCategories.length === 0
+                  ? "Select categories..."
+                  : `${selectedCategories.length} categor${
+                      selectedCategories.length === 1 ? "y" : "ies"
+                    } selected`}
+              </span>
+              <svg
+                className={`h-5 w-5 text-gray-400 transition-transform ${
+                  showCategoryDropdown ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {showCategoryDropdown && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                {/* Search Input */}
+                <div className="p-3 border-b border-gray-200">
+                  <input
+                    type="text"
+                    placeholder="Search categories..."
+                    value={categorySearch}
+                    onChange={(e) => setCategorySearch(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                </div>
+
+                <div className="p-2">
+                  {getFilteredCategories().length === 0 ? (
+                    <div className="p-3 text-center text-gray-500 text-sm">
+                      No categories found matching "{categorySearch}"
+                    </div>
+                  ) : (
+                    getFilteredCategories().map((category) => (
+                      <div
+                        key={category.id}
+                        className="flex items-start p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors"
+                        onClick={() => toggleCategory(category.id)}
+                      >
+                        <div className="flex items-center h-5">
+                          {selectedCategories.includes(category.id) ? (
+                            <Check className="h-4 w-4 text-blue-600" />
+                          ) : (
+                            <div className="h-4 w-4 border border-gray-300 rounded" />
+                          )}
+                        </div>
+                        <div className="ml-3 flex-1">
+                          <div className="text-sm font-medium text-gray-900">
+                            {category.label}
+                          </div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {category.description}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Example Sentences Section - Now Mandatory */}

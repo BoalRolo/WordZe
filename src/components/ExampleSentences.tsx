@@ -27,6 +27,7 @@ export function ExampleSentences({
   const [newTranslation, setNewTranslation] = useState("");
   const [editSentence, setEditSentence] = useState("");
   const [editTranslation, setEditTranslation] = useState("");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadExamples();
@@ -47,6 +48,17 @@ export function ExampleSentences({
     e.preventDefault();
     if (!newSentence.trim()) return;
 
+    // Validar se a sentence contém a palavra
+    const wordToCheck = word.toLowerCase().trim();
+    if (!newSentence.toLowerCase().includes(wordToCheck)) {
+      setError(
+        `A example sentence deve conter a palavra "${word}". Por favor, adicione uma frase que use a palavra "${word}".`
+      );
+      return;
+    }
+
+    setError(""); // Limpar erro se validação passou
+
     try {
       await ExamplesService.addExample(
         userId,
@@ -65,7 +77,22 @@ export function ExampleSentences({
 
   const handleEditExample = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!editingId || !editSentence.trim()) return;
+
+    if (!editingId || !editSentence.trim()) {
+      return;
+    }
+
+    // Validar se a sentence contém a palavra
+    const wordToCheck = word.toLowerCase().trim();
+
+    if (!editSentence.toLowerCase().includes(wordToCheck)) {
+      setError(
+        `❌ A example sentence deve conter a palavra "${word}".\n\nFrase atual: "${editSentence}"\nPalavra necessária: "${word}"\n\nPor favor, adicione uma frase que use a palavra "${word}".`
+      );
+      return;
+    }
+
+    setError(""); // Limpar erro se validação passou
 
     try {
       await ExamplesService.updateExample(
@@ -85,8 +112,6 @@ export function ExampleSentences({
   };
 
   const handleDeleteExample = async (exampleId: string) => {
-    if (!confirm("Are you sure you want to delete this example?")) return;
-
     try {
       await ExamplesService.deleteExample(userId, wordId, exampleId);
       await loadExamples();
@@ -135,6 +160,13 @@ export function ExampleSentences({
       {/* Add Form */}
       {showAddForm && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          {error && (
+            <div className="mb-3 p-3 bg-red-100 border border-red-300 rounded-md">
+              <p className="text-sm text-red-700 whitespace-pre-line">
+                {error}
+              </p>
+            </div>
+          )}
           <form onSubmit={handleAddExample} className="space-y-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -197,48 +229,57 @@ export function ExampleSentences({
               className="bg-white border border-gray-200 rounded-lg p-4"
             >
               {editingId === example.id ? (
-                <form onSubmit={handleEditExample} className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Example Sentence
-                    </label>
-                    <input
-                      type="text"
-                      value={editSentence}
-                      onChange={(e) => setEditSentence(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Translation (Optional)
-                    </label>
-                    <input
-                      type="text"
-                      value={editTranslation}
-                      onChange={(e) => setEditTranslation(e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    />
-                  </div>
-                  <div className="flex space-x-2">
-                    <button
-                      type="submit"
-                      className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
-                    >
-                      <Save className="h-4 w-4 mr-1" />
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      onClick={cancelEdit}
-                      className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
-                    >
-                      <X className="h-4 w-4 mr-1" />
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+                <div>
+                  {error && (
+                    <div className="mb-3 p-3 bg-red-100 border border-red-300 rounded-md">
+                      <p className="text-sm text-red-700 whitespace-pre-line">
+                        {error}
+                      </p>
+                    </div>
+                  )}
+                  <form onSubmit={handleEditExample} className="space-y-3">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Example Sentence
+                      </label>
+                      <input
+                        type="text"
+                        value={editSentence}
+                        onChange={(e) => setEditSentence(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Translation (Optional)
+                      </label>
+                      <input
+                        type="text"
+                        value={editTranslation}
+                        onChange={(e) => setEditTranslation(e.target.value)}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="flex space-x-2">
+                      <button
+                        type="submit"
+                        className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700"
+                      >
+                        <Save className="h-4 w-4 mr-1" />
+                        Save
+                      </button>
+                      <button
+                        type="button"
+                        onClick={cancelEdit}
+                        className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                      >
+                        <X className="h-4 w-4 mr-1" />
+                        Cancel
+                      </button>
+                    </div>
+                  </form>
+                </div>
               ) : (
                 <div className="space-y-2">
                   <div className="flex items-start justify-between">

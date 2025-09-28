@@ -3,7 +3,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { WordsService } from "@/services/words";
 import { DifficultyService } from "@/services/difficulty";
+import { WordImporter } from "@/components/WordImporter";
 import { WordDoc, Difficulty } from "@/types/models";
+import { categories } from "@/data/categories";
 import { ExampleSentences } from "@/components/ExampleSentences";
 import { Pagination } from "@/components/Pagination";
 import {
@@ -20,6 +22,8 @@ import {
   ChevronDown,
   ChevronRight,
   Search,
+  Upload,
+  Volume2,
 } from "lucide-react";
 
 export function Words() {
@@ -39,6 +43,13 @@ export function Words() {
   const [expandedWords, setExpandedWords] = useState<Set<string>>(new Set());
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [wordToDelete, setWordToDelete] = useState<{
+    id: string;
+    word: string;
+  } | null>(null);
+  const [showDeleteAllModal, setShowDeleteAllModal] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -59,7 +70,7 @@ export function Words() {
 
   const loadWords = async () => {
     if (!user) return;
-
+    setLoading(true);
     try {
       const wordsData = await WordsService.getWords(user.uid);
       setWords(wordsData);
@@ -73,79 +84,134 @@ export function Words() {
   const applyFilters = () => {
     let filtered = [...words];
 
-    // Search filter
+    // Apply search filter
     if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((word) => {
-        const wordText = word.word.toLowerCase();
-        const translationText = word.translation.toLowerCase();
-        // Note: example field removed, using examples subcollection instead
+      const query = searchQuery.toLowerCase();
+      filtered = filtered
+        .filter(
+          (word) =>
+            word.word.toLowerCase().includes(query) ||
+            word.translation.toLowerCase().includes(query)
+        )
+        .sort((a, b) => {
+          const aWord = a.word.toLowerCase();
+          const bWord = b.word.toLowerCase();
+          const aTranslation = a.translation.toLowerCase();
+          const bTranslation = b.translation.toLowerCase();
 
-        return wordText.includes(query) || translationText.includes(query);
+          // Priority 1: Exact match at start of word
+          const aStartsWith = aWord.startsWith(query) ? 0 : 1;
+          const bStartsWith = bWord.startsWith(query) ? 0 : 1;
+          if (aStartsWith !== bStartsWith) return aStartsWith - bStartsWith;
+
+          // Priority 2: Exact match at start of translation
+          const aTransStartsWith = aTranslation.startsWith(query) ? 0 : 1;
+          const bTransStartsWith = bTranslation.startsWith(query) ? 0 : 1;
+          if (aTransStartsWith !== bTransStartsWith)
+            return aTransStartsWith - bTransStartsWith;
+
+          // Priority 3: Shorter words first (more specific matches)
+          const aLength = aWord.length;
+          const bLength = bWord.length;
+          if (aLength !== bLength) return aLength - bLength;
+
+          // Priority 4: Alphabetical order
+          return aWord.localeCompare(bWord);
+        });
+      // Reset to page 1 when searching
+      setCurrentPage(1);
+    }
+
+    // Apply difficulty filter
+    if (difficultyFilter !== "all") {
+      filtered = filtered.filter((word) => {
+        const calculatedDifficulty =
+          DifficultyService.calculateDifficulty(word);
+        return calculatedDifficulty === difficultyFilter;
       });
     }
 
-    if (difficultyFilter !== "all") {
-      filtered = DifficultyService.filterWordsByDifficulty(
-        filtered,
-        difficultyFilter
-      );
-    }
-
-    if (showFailedOnly) {
-      filtered = filtered.filter((word) => word.lastResult === "fail");
-    }
-
+    // Apply type filter
     if (typeFilter !== "all") {
       filtered = filtered.filter((word) => word.type === typeFilter);
     }
 
-    // Calculate pagination
-    const totalPagesCount = Math.ceil(filtered.length / wordsPerPage);
-    setTotalPages(totalPagesCount);
-
-    // Reset to page 1 if current page is beyond available pages
-    if (currentPage > totalPagesCount && totalPagesCount > 0) {
-      setCurrentPage(1);
+    // Apply failed only filter
+    if (showFailedOnly) {
+      filtered = filtered.filter((word) => word.fails > 0);
     }
 
-    // Get words for current page
-    const startIndex = (currentPage - 1) * wordsPerPage;
+    // Calculate pagination
+    const totalPages = Math.ceil(filtered.length / wordsPerPage);
+    setTotalPages(totalPages);
+
+    // Ensure currentPage doesn't exceed totalPages
+    const validCurrentPage = Math.min(currentPage, Math.max(1, totalPages));
+    if (validCurrentPage !== currentPage) {
+      setCurrentPage(validCurrentPage);
+    }
+
+    // Get current page items
+    const startIndex = (validCurrentPage - 1) * wordsPerPage;
     const endIndex = startIndex + wordsPerPage;
     const paginatedWords = filtered.slice(startIndex, endIndex);
 
     setFilteredWords(paginatedWords);
   };
 
-  const handleDelete = async (wordId: string) => {
+  const handleDeleteClick = (wordId: string, word: string) => {
+    window.scrollTo(0, 0);
+    setWordToDelete({ id: wordId, word });
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!user || !wordToDelete) return;
+
+    try {
+      await WordsService.deleteWord(user.uid, wordToDelete.id);
+      setWords(words.filter((word) => word.id !== wordToDelete.id));
+      setShowDeleteModal(false);
+      setWordToDelete(null);
+    } catch (error) {
+      console.error("Error deleting word:", error);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setWordToDelete(null);
+  };
+
+  const handleDeleteAllClick = () => {
+    setShowDeleteAllModal(true);
+  };
+
+  const handleDeleteAllConfirm = async () => {
     if (!user) return;
 
-    if (window.confirm("Are you sure you want to delete this word?")) {
-      try {
-        await WordsService.deleteWord(user.uid, wordId);
-        setWords(words.filter((word) => word.id !== wordId));
-      } catch (error) {
-        console.error("Error deleting word:", error);
+    try {
+      // Delete all words
+      for (const word of words) {
+        await WordsService.deleteWord(user.uid, word.id);
       }
+      setWords([]);
+      setShowDeleteAllModal(false);
+    } catch (error) {
+      console.error("Error deleting all words:", error);
     }
+  };
+
+  const handleDeleteAllCancel = () => {
+    setShowDeleteAllModal(false);
+  };
+
+  const closeImportModal = () => {
+    setShowImportModal(false);
   };
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const getDifficultyColor = (word: WordDoc) => {
-    const difficulty = DifficultyService.calculateDifficulty(word);
-    switch (difficulty) {
-      case "easy":
-        return "bg-green-100 text-green-800";
-      case "medium":
-        return "bg-yellow-100 text-yellow-800";
-      case "hard":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
   };
 
   const toggleWordExpansion = (wordId: string) => {
@@ -156,6 +222,20 @@ export function Words() {
       newExpanded.add(wordId);
     }
     setExpandedWords(newExpanded);
+  };
+
+  const getDifficultyColor = (word: WordDoc) => {
+    const difficulty = DifficultyService.calculateDifficulty(word);
+    switch (difficulty) {
+      case "easy":
+        return "bg-green-100 text-green-800 border border-green-200";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border border-yellow-200";
+      case "hard":
+        return "bg-red-100 text-red-800 border border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border border-gray-200";
+    }
   };
 
   const getDifficultyLabel = (word: WordDoc) => {
@@ -191,311 +271,416 @@ export function Words() {
             Manage your vocabulary collection
           </p>
         </div>
-        <Link
-          to="/words/add"
-          className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
-        >
-          <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-          Add Word
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Link
+            to="/words/add"
+            className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
+          >
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+            Add Word
+          </Link>
+
+          <button
+            onClick={() => {
+              window.scrollTo(0, 0);
+              setShowImportModal(true);
+            }}
+            className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
+          >
+            <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+            Import Words
+          </button>
+
+          {words.length > 0 && (
+            <button
+              onClick={handleDeleteAllClick}
+              className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
+            >
+              <Trash2 className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+              Delete All
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Search Bar */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 sm:p-6 rounded-2xl shadow-lg border border-blue-200">
         <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 sm:pl-4 flex items-center pointer-events-none">
-            <Search className="h-4 w-4 sm:h-5 sm:w-5 text-blue-500" />
-          </div>
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
           <input
             type="text"
-            placeholder="Search words, translations, or examples..."
+            placeholder="Search words..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 text-base sm:text-lg border-2 border-blue-200 rounded-xl bg-white shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:border-blue-300 transition-all duration-200 placeholder-gray-400"
+            className="w-full pl-10 sm:pl-12 pr-4 py-3 sm:py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
           />
-          {searchQuery && (
-            <button
-              onClick={() => setSearchQuery("")}
-              className="absolute inset-y-0 right-0 pr-3 sm:pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors duration-200"
-            >
-              <span className="text-xl sm:text-2xl">&times;</span>
-            </button>
-          )}
         </div>
-        {(searchQuery ||
-          difficultyFilter !== "all" ||
-          showFailedOnly ||
-          typeFilter !== "all") && (
-          <div className="mt-2 sm:mt-3 text-xs sm:text-sm text-blue-600 font-medium">
-            {searchQuery ? (
-              <>
-                Found {filteredWords.length} word
-                {filteredWords.length !== 1 ? "s" : ""} matching "{searchQuery}"
-                (Page {currentPage} of {totalPages})
-              </>
-            ) : (
-              <>
-                Showing {filteredWords.length} of {words.length} word
-                {words.length !== 1 ? "s" : ""} (Page {currentPage} of{" "}
-                {totalPages})
-              </>
-            )}
-          </div>
-        )}
       </div>
 
-      {/* Enhanced Filters */}
-      <div className="bg-gradient-to-r from-white to-gray-50 p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Difficulty Filter */}
-          <div className="flex items-center space-x-3">
-            <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
+      {/* Filters */}
+      <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-lg border border-gray-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Difficulty
+            </label>
             <select
               value={difficultyFilter}
               onChange={(e) =>
                 setDifficultyFilter(e.target.value as Difficulty | "all")
               }
-              className="flex-1 border-2 border-gradient-to-r from-blue-300 to-purple-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-50 to-purple-50 shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 hover:from-blue-100 hover:to-purple-100 transition-all duration-200"
-              style={{
-                background: "linear-gradient(135deg, #dbeafe 0%, #f3e8ff 100%)",
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-                borderImage: "linear-gradient(135deg, #3b82f6, #8b5cf6) 1",
-              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             >
-              <option value="all" className="text-gray-600">
-                All difficulties
-              </option>
-              <option value="easy" className="text-green-700 font-medium">
-                🟢 Easy
-              </option>
-              <option value="medium" className="text-yellow-700 font-medium">
-                🟡 Medium
-              </option>
-              <option value="hard" className="text-red-700 font-medium">
-                🔴 Hard
-              </option>
+              <option value="all">All Difficulties</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
             </select>
           </div>
 
-          {/* Type Filter */}
-          <div className="flex items-center space-x-3">
-            <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Type
+            </label>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="flex-1 border-2 border-gradient-to-r from-green-300 to-blue-300 rounded-xl px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-gradient-to-r from-green-50 to-blue-50 shadow-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 hover:from-green-100 hover:to-blue-100 transition-all duration-200"
-              style={{
-                background: "linear-gradient(135deg, #dcfce7 0%, #dbeafe 100%)",
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-                borderImage: "linear-gradient(135deg, #22c55e, #3b82f6) 1",
-              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             >
-              <option value="all" className="text-gray-600">
-                All types
-              </option>
-              <option value="noun" className="text-blue-700 font-medium">
-                📚 Nouns
-              </option>
-              <option value="verb" className="text-green-700 font-medium">
-                🏃 Verbs
-              </option>
-              <option value="adjective" className="text-purple-700 font-medium">
-                ✨ Adjectives
-              </option>
-              <option value="adverb" className="text-orange-700 font-medium">
-                ⚡ Adverbs
-              </option>
-              <option value="phrasal verb" className="text-red-700 font-medium">
-                🔗 Phrasal Verbs
-              </option>
+              <option value="all">All Types</option>
+              <option value="noun">Noun</option>
+              <option value="verb">Verb</option>
+              <option value="adjective">Adjective</option>
+              <option value="adverb">Adverb</option>
+              <option value="phrase">Phrase</option>
+              <option value="idiom">Idiom</option>
             </select>
           </div>
 
-          {/* Failed Only Filter */}
-          <label className="flex items-center space-x-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={showFailedOnly}
-              onChange={(e) => setShowFailedOnly(e.target.checked)}
-              className="w-5 h-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
-            />
-            <span className="text-sm font-medium text-gray-700">
-              Failed only
-            </span>
-          </label>
+          <div className="flex items-center">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={showFailedOnly}
+                onChange={(e) => setShowFailedOnly(e.target.checked)}
+                className="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm font-medium text-gray-700">
+                Show failed words only
+              </span>
+            </label>
+          </div>
         </div>
       </div>
 
-      {filteredWords.length === 0 ? (
-        <div className="text-center py-12 sm:py-16">
-          {words.length === 0 ? (
-            <>
-              <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                <BookOpen className="h-10 w-10 sm:h-12 sm:w-12 text-blue-500" />
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                No words yet
-              </h3>
-              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto px-4">
-                Start building your vocabulary by adding your first word. Every
-                journey begins with a single step!
-              </p>
-              <Link
-                to="/words/add"
-                className="inline-flex items-center px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
-              >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                Add your first word
-              </Link>
-            </>
-          ) : (
-            <>
-              <div className="mx-auto w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center mb-4 sm:mb-6">
-                <Filter className="h-10 w-10 sm:h-12 sm:w-12 text-gray-500" />
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                No words match your filters
-              </h3>
-              <p className="text-base sm:text-lg text-gray-600 mb-6 sm:mb-8 max-w-md mx-auto px-4">
-                Try adjusting your filter criteria to see more words, or add new
-                words to your collection.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
-                <button
-                  onClick={() => {
-                    setDifficultyFilter("all");
-                    setShowFailedOnly(false);
-                    setTypeFilter("all");
-                    setSearchQuery("");
-                  }}
-                  className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors duration-200 text-sm sm:text-base"
-                >
-                  Clear filters
-                </button>
+      {/* Words List */}
+      <div className="space-y-4">
+        {filteredWords.length === 0 ? (
+          <div className="text-center py-12">
+            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No words found
+            </h3>
+            <p className="text-gray-500 mb-6">
+              {searchQuery ||
+              difficultyFilter !== "all" ||
+              typeFilter !== "all" ||
+              showFailedOnly
+                ? "Try adjusting your filters or search terms"
+                : "Start building your vocabulary by adding your first word"}
+            </p>
+            {!searchQuery &&
+              difficultyFilter === "all" &&
+              typeFilter === "all" &&
+              !showFailedOnly && (
                 <Link
                   to="/words/add"
-                  className="inline-flex items-center px-4 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-sm sm:text-base"
+                  className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
                 >
-                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
-                  Add new word
+                  <Plus className="w-5 h-5 mr-2" />
+                  Add Your First Word
                 </Link>
-              </div>
-            </>
-          )}
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:gap-6">
-          {filteredWords.map((word) => (
+              )}
+          </div>
+        ) : (
+          filteredWords.map((word) => (
             <div
               key={word.id}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-200 p-4 sm:p-6"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-6 hover:shadow-xl transition-shadow duration-200"
             >
               <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center space-x-2 sm:space-x-4 mb-2 sm:mb-3">
-                    <div className="flex-1">
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                        {formatWordForDisplay(word.word)}
-                      </h3>
-                      <p className="text-base sm:text-lg text-gray-600 mb-2">
-                        {formatTranslationForDisplay(word.translation)}
-                      </p>
-                      {word.type && (
-                        <span className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-gradient-to-r from-blue-100 to-blue-200 text-blue-800 border border-blue-300">
-                          {word.type}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm mb-3 sm:mb-4">
-                    <div className="flex items-center space-x-1 sm:space-x-2">
-                      <span className="text-gray-500">Attempts:</span>
-                      <span className="font-semibold text-gray-900">
-                        {word.attempts}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1 sm:space-x-2">
-                      <span className="text-green-600">Success:</span>
-                      <span className="font-semibold text-green-700">
-                        {word.successes}
-                      </span>
-                    </div>
-                    <div className="flex items-center space-x-1 sm:space-x-2">
-                      <span className="text-red-600">Fails:</span>
-                      <span className="font-semibold text-red-700">
-                        {word.fails}
-                      </span>
-                    </div>
-                    <span
-                      className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${getDifficultyColor(
-                        word
-                      )}`}
-                    >
-                      {getDifficultyLabel(word)}
-                    </span>
-                  </div>
-
-                  {/* Example Sentences Section */}
-                  <div className="border-t border-gray-200 pt-3 sm:pt-4">
-                    <button
-                      onClick={() => toggleWordExpansion(word.id)}
-                      className="flex items-center space-x-1 sm:space-x-2 text-blue-600 hover:text-blue-800 font-medium mb-2 sm:mb-3 text-sm sm:text-base"
-                    >
-                      {expandedWords.has(word.id) ? (
-                        <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4" />
-                      ) : (
-                        <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                      )}
-                      <span>Example Sentences</span>
-                    </button>
-
-                    {expandedWords.has(word.id) && user && (
-                      <ExampleSentences
-                        userId={user.uid}
-                        wordId={word.id}
-                        word={formatWordForDisplay(word.word)}
-                        translation={formatTranslationForDisplay(
-                          word.translation
-                        )}
-                      />
+                <div className="flex-1">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+                      {formatWordForDisplay(word.word)}
+                    </h3>
+                    {word.phonetic && (
+                      <div className="relative group">
+                        <Volume2 className="h-4 w-4 text-blue-500 cursor-help" />
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-48 bg-gray-900 text-white text-xs rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
+                          <div className="text-center">
+                            <div className="font-semibold text-blue-300 mb-1">
+                              Phonetic
+                            </div>
+                            <div className="text-white">{word.phonetic}</div>
+                          </div>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                        </div>
+                      </div>
                     )}
+                    {word.type && (
+                      <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded-full">
+                        {word.type}
+                      </span>
+                    )}
+                    {word.difficulty && (
+                      <span
+                        className={`px-2 py-1 text-xs font-medium rounded-full ${
+                          word.difficulty === "beginner"
+                            ? "bg-green-100 text-green-800"
+                            : word.difficulty === "intermediate"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {word.difficulty}
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-gray-600 mb-3">
+                    {formatTranslationForDisplay(word.translation)}
+                  </p>
+
+                  {word.categories && word.categories.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {word.categories.map((categoryId) => {
+                        const category = categories.find(
+                          (cat) => cat.id === categoryId
+                        );
+                        return category ? (
+                          <span
+                            key={categoryId}
+                            className="px-2 py-1 bg-purple-100 text-purple-800 text-xs font-medium rounded-full"
+                          >
+                            {category.label}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+
+                  {word.notes && (
+                    <p className="text-sm text-gray-500 mb-3 italic">
+                      {word.notes}
+                    </p>
+                  )}
+
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <span>Attempts: {word.attempts}</span>
+                    <span>Success: {word.successes}</span>
+                    <span>Fails: {word.fails}</span>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2 sm:space-x-3 ml-2 sm:ml-4">
-                  <Link
-                    to={`/words/edit/${word.id}`}
-                    className="p-1.5 sm:p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors duration-200"
-                    title="Edit word"
-                  >
-                    <Edit className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </Link>
+                <div className="flex items-center space-x-2 ml-4">
                   <button
-                    onClick={() => handleDelete(word.id)}
-                    className="p-1.5 sm:p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors duration-200"
-                    title="Delete word"
+                    onClick={() => {
+                      const newExpanded = new Set(expandedWords);
+                      if (newExpanded.has(word.id)) {
+                        newExpanded.delete(word.id);
+                      } else {
+                        newExpanded.add(word.id);
+                      }
+                      setExpandedWords(newExpanded);
+                    }}
+                    className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                    {expandedWords.has(word.id) ? (
+                      <ChevronDown className="w-4 h-4" />
+                    ) : (
+                      <ChevronRight className="w-4 h-4" />
+                    )}
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleDeleteClick(
+                        word.id,
+                        formatWordForDisplay(word.word)
+                      )
+                    }
+                    className="p-2 text-red-400 hover:text-red-600 transition-colors"
+                  >
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
+
+              {expandedWords.has(word.id) && (
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <ExampleSentences
+                    userId={user!.uid}
+                    wordId={word.id}
+                    word={formatWordForDisplay(word.word)}
+                    translation={formatTranslationForDisplay(word.translation)}
+                  />
+                </div>
+              )}
             </div>
-          ))}
+          ))
+        )}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center">
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            itemsPerPage={wordsPerPage}
+            totalItems={words.length}
+            showInfo={true}
+          />
         </div>
       )}
 
-      {/* Pagination */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        itemsPerPage={wordsPerPage}
-        totalItems={words.length}
-        showInfo={true}
-      />
+      {/* Import Modal */}
+      {showImportModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 pt-8 sm:pt-16">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Import Words
+                </h2>
+                <button
+                  onClick={closeImportModal}
+                  className="text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <WordImporter
+                onClose={() => {
+                  setShowImportModal(false);
+                  loadWords();
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && wordToDelete && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 pt-8 sm:pt-16">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                  <Trash2 className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Delete Word
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-gray-700">
+                  Are you sure you want to delete{" "}
+                  <strong>"{wordToDelete.word}"</strong>?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  All associated examples and progress data will be permanently
+                  removed.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={handleDeleteCancel}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteConfirm}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  Delete Word
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete All Confirmation Modal */}
+      {showDeleteAllModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 p-4 pt-8 sm:pt-16">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
+            <div className="p-6">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mr-4">
+                  <Trash2 className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    Delete All Words
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    This action cannot be undone
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <p className="text-gray-700">
+                  Are you sure you want to delete{" "}
+                  <strong>all {words.length} words</strong>?
+                </p>
+                <p className="text-sm text-gray-500 mt-2">
+                  All words, examples, and progress data will be permanently
+                  removed.
+                </p>
+              </div>
+
+              <div className="flex justify-end space-x-3">
+                <button
+                  onClick={handleDeleteAllCancel}
+                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAllConfirm}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium"
+                >
+                  Delete All Words
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

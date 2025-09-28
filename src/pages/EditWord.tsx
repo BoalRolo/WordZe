@@ -90,7 +90,7 @@ export function EditWord() {
       await WordsService.updateWord(user.uid, id, {
         word: formData.word.trim(),
         translation: formData.translation.trim(),
-        type: (formData.type?.trim() as 'verb' | 'noun' | 'phrasal verb' | 'adjective' | 'adverb') || undefined,
+        type: (formData.type?.trim() as 'noun' | 'verb' | 'adjective' | 'adverb' | 'phrase' | 'idiom') || undefined,
         notes: formData.notes?.trim() || undefined,
       });
 

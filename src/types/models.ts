@@ -1,77 +1,80 @@
-import { Timestamp } from 'firebase/firestore'
+import { Timestamp } from "firebase/firestore";
 
 export interface UserDoc {
-  name: string
-  email: string
-  photoURL?: string
-  createdAt: Timestamp
+  name: string;
+  email: string;
+  photoURL?: string;
+  createdAt: Timestamp;
 }
 
 export interface WordDoc {
-  word: string
-  translation: string
-  type?: 'verb' | 'noun' | 'phrasal verb' | 'adjective' | 'adverb'
-  notes?: string
-  createdAt: Timestamp
-  attempts: number
-  successes: number
-  fails: number
-  lastAttempt?: Timestamp
-  lastResult?: 'success' | 'fail'
+  word: string;
+  translation: string;
+  type?: "noun" | "verb" | "adjective" | "adverb" | "phrase" | "idiom";
+  notes?: string;
+  categories?: string[]; // Array of category IDs
+  difficulty?: "beginner" | "intermediate" | "advanced";
+  phonetic?: string; // Phonetic pronunciation
+  createdAt: Timestamp;
+  attempts: number;
+  successes: number;
+  fails: number;
+  lastAttempt?: Timestamp;
+  lastResult?: "success" | "fail";
 }
 
 export interface ExampleSentence {
-  id: string
-  sentence: string
-  translation?: string
-  createdAt: Timestamp
+  id: string;
+  sentence: string;
+  translation?: string;
+  createdAt: Timestamp;
 }
 
 export interface SessionDoc {
-  type: 'quiz' | 'flashcards'
-  score: number
-  total: number
-  playedAt: Timestamp
-  duration?: number // in seconds
-  failedWords?: string[] // array of word IDs that were failed
-  correctWords?: string[] // array of word IDs that were correct
-  difficulty?: string // overall difficulty of the session
+  type: "quiz" | "flashcards";
+  score: number;
+  total: number;
+  playedAt: Timestamp;
+  duration?: number; // in seconds
+  failedWords?: string[]; // array of word IDs that were failed
+  correctWords?: string[]; // array of word IDs that were correct
+  difficulty?: string; // overall difficulty of the session
 }
 
 export interface QuizHistoryItem {
-  id: string
-  date: string
-  type: 'quiz' | 'flashcards'
-  score: number
-  total: number
-  percentage: number
-  duration: number
+  id: string;
+  date: string;
+  type: "quiz" | "flashcards";
+  score: number;
+  total: number;
+  percentage: number;
+  duration: number;
   failedWords: Array<{
-    wordId: string
-    word: string
-    translation: string
-  }>
+    wordId: string;
+    word: string;
+    translation: string;
+  }>;
   correctWords: Array<{
-    wordId: string
-    word: string
-    translation: string
-  }>
+    wordId: string;
+    word: string;
+    translation: string;
+  }>;
 }
 
-export type Difficulty = 'easy' | 'medium' | 'hard'
+export type Difficulty = "easy" | "medium" | "hard";
 
 export interface QuizItem {
-  word: string
-  translation: string
-  options: string[]
-  correctAnswer: string
+  word: string;
+  translation: string;
+  options: string[];
+  correctAnswer: string;
 }
 
 export interface GameSession {
-  type: 'quiz' | 'flashcards'
-  items: WordDoc[]
-  currentIndex: number
-  score: number
-  total: number
-  startTime: Date
+  type: "quiz" | "flashcards";
+  items: WordDoc[];
+  currentIndex: number;
+  score: number;
+  total: number;
+  startTime: Date;
 }
